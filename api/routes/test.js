@@ -1,6 +1,15 @@
+const models = require('../models')
+
 module.exports = (app) => {
   app.get('/', (req, res, err) => {
-    res.send('Hello World hahah')
+    models.User.findAll({
+      include: [ models.Task ]
+    }).then(function (users) {
+      res.send({
+        title: 'Sequelize: Express Example',
+        users: users
+      })
+    })
   })
 
   app.post('/testPost', (req, res, err) => {

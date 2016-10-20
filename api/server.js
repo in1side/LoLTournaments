@@ -1,23 +1,27 @@
 'use strict'
 
-
 const express = require('express')
 const app = express()
 const fs = require('fs')
 const bodyParser = require('body-parser')
 const graphqlHTTP = require('express-graphql')
 const { buildSchema } = require('graphql')
+const models = require('./models')
 
 // Constants
 const ROUTES_PATH = __dirname + '/routes'
 
-var schema = buildSchema(`
+// Sequelize
+models.sequelize.sync()
+
+// graphQL
+const schema = buildSchema(`
   type Query {
     hello: String
   }
 `)
 
-var root = { hello: () => 'Hello world!' }
+const root = { hello: () => 'Hello world!' }
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
