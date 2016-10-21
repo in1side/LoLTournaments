@@ -1,8 +1,8 @@
 'use strict'
 
 module.exports = function (sequelize, DataTypes) {
-  const User = sequelize.define('User', {
-    username: {
+  const Team = sequelize.define('Team', {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
@@ -10,44 +10,33 @@ module.exports = function (sequelize, DataTypes) {
         notEmpty: true
       }
     },
-    summonerName: {
-      type: DataTypes.STRING(14),
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
-    },
-    teams: {
+    members: {
       type: DataTypes.ARRAY(DataTypes.UUID),
       allowNull: false,
       validate: {
         isArray: true
       }
     },
-    mainRoles: {
+    desiredRoles: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
       validate: {
         isIn: [['TOP', 'MID', 'ADC', 'SUPP', 'JUNG', 'ANY']],
         notNull: true,
+        notEmpty: true,
         isArray: true
       }
     },
-    availability: {
-      type: DataTypes.ARRAY(DataTypes.DATE)
-    },
-    timeZone: {
-      type: DataTypes.STRING
-    },
-    server: {
-      type: DataTypes.STRING,
+    leader: {
+      type: DataTypes.UUID,
+      allowNull: false,
       validate: {
-        isIn: [['BR', 'EUNE', 'EUW', 'LAN', 'LAS', 'NA', 'OCE', 'RU', 'TR', 'JP', 'SEA', 'KR']]
+        notEmpty: true
       }
     }
   }, {
-    tableName: 'users'
+    tableName: 'teams'
   })
 
-  return User
+  return Team
 }

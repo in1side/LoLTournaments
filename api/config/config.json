@@ -10,8 +10,9 @@
   "test": {
     "username": null,
     "password": null,
-    "database": "database_test",
+    "database": "Test-LoLTeams",
     "host": "127.0.0.1",
+    "port": 5432,
     "dialect": "postgres"
   },
   "production": {

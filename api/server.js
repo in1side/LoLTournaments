@@ -10,9 +10,19 @@ const models = require('./models')
 
 // Constants
 const ROUTES_PATH = __dirname + '/routes'
+let dbSyncConfig = {
+  force: false
+}
+
+console.log('current env: ', process.env.NODE_ENV)
+
+if (process.env.NODE_ENV === 'development') {
+  console.log('Not overwriting DB...')
+  dbSyncConfig.force = true
+}
 
 // Sequelize
-models.sequelize.sync()
+models.sequelize.sync(dbSyncConfig)
 
 // graphQL
 const schema = buildSchema(`
