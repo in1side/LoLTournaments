@@ -9,6 +9,7 @@ const { buildSchema } = require('graphql')
 const models = require('./models')
 
 // Constants
+global.db = models
 const ROUTES_PATH = __dirname + '/routes'
 let dbSyncConfig = {
   force: false
@@ -16,7 +17,7 @@ let dbSyncConfig = {
 
 console.log('current env: ', process.env.NODE_ENV)
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV !== 'production') {
   console.log('Not overwriting DB...')
   dbSyncConfig.force = true
 }

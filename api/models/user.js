@@ -1,5 +1,7 @@
 'use strict'
 
+const ALLOWED_ROLES = ['TOP', 'MID', 'ADC', 'SUPP', 'JUNG', 'ANY']
+
 module.exports = function (sequelize, DataTypes) {
   const User = sequelize.define('User', {
     username: {
@@ -17,19 +19,22 @@ module.exports = function (sequelize, DataTypes) {
         notEmpty: true
       }
     },
-    teams: {
-      type: DataTypes.ARRAY(DataTypes.UUID),
-      allowNull: false,
-      validate: {
-        isArray: true
-      }
-    },
     mainRoles: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
       validate: {
-        isIn: [['TOP', 'MID', 'ADC', 'SUPP', 'JUNG', 'ANY']],
-        notNull: true,
+        isIn: (value) => {
+          value.forEach((role) => {
+            if (!ALLOWED_ROLES.includes(role)) {
+              throw new Error('Given invalid role.')
+            }
+          })
+        }
+      }
+    },
+    teams: {
+      type: DataTypes.ARRAY(DataTypes.UUID),
+      validate: {
         isArray: true
       }
     },
