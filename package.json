@@ -46,6 +46,13 @@
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2"
   },
+  "standard": {
+    "parser": "babel-eslint",
+    "globals": [
+      "db",
+      "constants"
+    ]
+  },
   "ava": {
     "files": [
       "./front/tests/**/*.test.js",

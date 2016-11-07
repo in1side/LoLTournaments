@@ -7,9 +7,11 @@ const bodyParser = require('body-parser')
 const graphqlHTTP = require('express-graphql')
 const { buildSchema } = require('graphql')
 const models = require('./models')
+const consants = require('./constants')
 
 // Constants
 global.db = models
+global.constants = consants
 const ROUTES_PATH = __dirname + '/routes'
 let dbSyncConfig = {
   force: false
@@ -18,11 +20,12 @@ let dbSyncConfig = {
 console.log('current env: ', process.env.NODE_ENV)
 
 if (process.env.NODE_ENV !== 'production') {
-  console.log('Not overwriting DB...')
+  console.log('Overwriting DB...')
   dbSyncConfig.force = true
 }
 
-// Sequelize
+// Set up associations and initialize Sequelize
+db.User.belongsTo(db.Team)
 models.sequelize.sync(dbSyncConfig)
 
 // graphQL

@@ -2,6 +2,11 @@
 
 module.exports = function (sequelize, DataTypes) {
   const Team = sequelize.define('Team', {
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -12,27 +17,25 @@ module.exports = function (sequelize, DataTypes) {
     },
     members: {
       type: DataTypes.ARRAY(DataTypes.UUID),
-      allowNull: false,
-      validate: {
-        isArray: true
-      }
+      allowNull: false
     },
     desiredRoles: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
       validate: {
-        isIn: [['TOP', 'MID', 'ADC', 'SUPP', 'JUNG', 'ANY']],
-        notNull: true,
-        notEmpty: true,
-        isArray: true
-      }
-    },
-    leader: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      validate: {
+        isIn: (value) => {
+          value.forEach((role) => {
+            if (!constants.ALLOWED_ROLES.includes(role)) {
+              throw new Error('Given invalid role.')
+            }
+          })
+        },
         notEmpty: true
       }
+    },
+    leaderID: {
+      type: DataTypes.UUID,
+      allowNull: false
     }
   }, {
     tableName: 'teams'

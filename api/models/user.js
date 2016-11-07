@@ -1,9 +1,12 @@
 'use strict'
 
-const ALLOWED_ROLES = ['TOP', 'MID', 'ADC', 'SUPP', 'JUNG', 'ANY']
-
 module.exports = function (sequelize, DataTypes) {
   const User = sequelize.define('User', {
+    id : {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4
+    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -25,7 +28,7 @@ module.exports = function (sequelize, DataTypes) {
       validate: {
         isIn: (value) => {
           value.forEach((role) => {
-            if (!ALLOWED_ROLES.includes(role)) {
+            if (!constants.ALLOWED_ROLES.includes(role)) {
               throw new Error('Given invalid role.')
             }
           })
