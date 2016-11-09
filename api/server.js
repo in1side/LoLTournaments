@@ -7,11 +7,11 @@ const bodyParser = require('body-parser')
 const graphqlHTTP = require('express-graphql')
 const { buildSchema } = require('graphql')
 const models = require('./models')
-const consants = require('./constants')
+const constants = require('./constants')
 
 // Constants
 global.db = models
-global.constants = consants
+global.constants = constants
 const ROUTES_PATH = __dirname + '/routes'
 let dbSyncConfig = {
   force: false

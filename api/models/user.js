@@ -1,8 +1,10 @@
 'use strict'
 
+const constants = require('../constants')
+
 module.exports = function (sequelize, DataTypes) {
   const User = sequelize.define('User', {
-    id : {
+    id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
@@ -16,7 +18,7 @@ module.exports = function (sequelize, DataTypes) {
       }
     },
     summonerName: {
-      type: DataTypes.STRING(14),
+      type: DataTypes.STRING(constants.SUMMONER_MAX_LEN),
       allowNull: false,
       validate: {
         notEmpty: true

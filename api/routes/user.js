@@ -3,6 +3,9 @@
 module.exports = (app) => {
   app.post('/create/user', (req, res, err) => {
     const { username, summonerName, mainRoles, timeZone, server } = req.body
+
+    if (summonerName.length > constants.SUMMONER_MAX_LEN) return res.send({ message: `Invalid summonerName: over ${constants.SUMMONER_MAX_LEN} characters.` })
+
     db.User.findOrCreate({ where: { username, summonerName }, defaults: { mainRoles, timeZone, server } })
       .spread((user, isSuccessful) => {
         isSuccessful ? res.send(user) : res.send({ message: 'Failed user creation: user already exists.' })
