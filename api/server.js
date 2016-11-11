@@ -4,10 +4,8 @@ const express = require('express')
 const app = express()
 const fs = require('fs')
 const bodyParser = require('body-parser')
-const graphqlHTTP = require('express-graphql')
-const { buildSchema } = require('graphql')
 const models = require('./models')
-const constants = require('./constants')
+const constants = require('../constants')
 
 // Constants
 global.db = models
@@ -28,22 +26,8 @@ if (process.env.NODE_ENV !== 'production') {
 db.User.belongsTo(db.Team)
 models.sequelize.sync(dbSyncConfig)
 
-// graphQL
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`)
-
-const root = { hello: () => 'Hello world!' }
-
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  rootValue: root,
-  graphiql: true
-}))
 
 /**
 * Require all route files in the 'routes' directory.

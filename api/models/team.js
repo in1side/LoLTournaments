@@ -1,5 +1,7 @@
 'use strict'
 
+const constants = require('../../constants')
+
 module.exports = function (sequelize, DataTypes) {
   const Team = sequelize.define('Team', {
     id: {
@@ -8,7 +10,7 @@ module.exports = function (sequelize, DataTypes) {
       defaultValue: DataTypes.UUIDV4
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(constants.MAX_TEAM_NAME_LENGTH),
       allowNull: false,
       validate: {
         is: /([A-Za-z0-9\-\_]+)/i,
