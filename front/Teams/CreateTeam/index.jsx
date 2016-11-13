@@ -4,19 +4,27 @@ import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import constants from '../../../constants'
+import 'whatwg-fetch'
 
 // Components
-import CustomRadioSelection from '../../util/components/CustomRadioSelection'
+import CustomMultiSelect from '../../util/components/CustomMultiSelect'
 
 export default class CreateTeam extends Component {
   constructor (props) {
     super(props)
 
+    // Generate state for roles
+    const initialRolesState = {}
+    constants.ALLOWED_ROLES.forEach((role) => {
+      initialRolesState[role] = false
+    })
+
+    // NOTE: Need Object.assign() or else points to same obj in memory
     this.state = {
       name: '',
-      desiredRoles: [],
+      desiredRoles: Object.assign({}, initialRolesState),
       leaderUsername: '',
-      leaderRoles: [],
+      leaderTeamRoles: Object.assign({}, initialRolesState),
       errorText: ''
     }
   }
@@ -35,22 +43,69 @@ export default class CreateTeam extends Component {
     this.setState(result)
   }
 
-  handleDesiredRolesInput = (event, value) => {
+  handleDesiredRolesInputUsingButtonValue = (event, isInputChecked) => {
     event.preventDefault()
-    this.setState({ desiredRoles: [value] })
+
+    const newDesiredRoles = this.state.desiredRoles
+    const selectedRole = event.target.value
+
+    newDesiredRoles[selectedRole] = !newDesiredRoles[selectedRole]
+
+    this.setState({
+      desiredRoles: newDesiredRoles
+    })
   }
 
-  handleLeaderRolesInput = (event, value) => {
+  handleLeaderTeamRolesInputUsingButtonValue = (event, isInputChecked) => {
     event.preventDefault()
-    this.setState({ leaderRoles: [value] })
+
+    const newLeaderTeamRoles = this.state.leaderTeamRoles
+    const selectedRole = event.target.value
+
+    newLeaderTeamRoles[selectedRole] = !newLeaderTeamRoles[selectedRole]
+
+    this.setState({
+      leaderTeamRoles: newLeaderTeamRoles
+    })
+  }
+
+  generateMultiSelectButtonConfigs = (buttonsState, clickHandler) => {
+    return Object.keys(buttonsState).map((role) => {
+      return { label: role, value: role, selected: buttonsState[role], onClick: clickHandler }
+    })
+  }
+
+  postCreateTeam = () => {
+    const { name, desiredRoles } = this.state
+
+    const selectedRoles = []
+    Object.keys(desiredRoles).forEach((role) => {
+      if (desiredRoles[role]) selectedRoles.push(role)
+    })
+
+    fetch('http://localhost:3000/create/team', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        teamName: name,
+        desiredRoles: selectedRoles,
+        leaderUserID: '261a3e3c-dd27-4fa3-bcda-4431138d47ae' // TODO: Get leader user id
+      })
+    })
+    .then((result) => {
+      console.log(result)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   }
 
   render () {
-    // Create an object setting each role as its own key and value
-    const roleOptions = {}
-    for (let i = 0; i < constants.ALLOWED_ROLES.length; i++) {
-      roleOptions[constants.ALLOWED_ROLES[i]] = constants.ALLOWED_ROLES[i]
-    }
+    const { desiredRoles, leaderTeamRoles } = this.state
+    const desiredRolesButtonConfig = this.generateMultiSelectButtonConfigs(desiredRoles, this.handleDesiredRolesInputUsingButtonValue)
+    const leaderTeamRolesButtonConfig = this.generateMultiSelectButtonConfigs(leaderTeamRoles, this.handleLeaderTeamRolesInputUsingButtonValue)
 
     return (
       <div className='CreateTeam'>
@@ -61,19 +116,15 @@ export default class CreateTeam extends Component {
           errorText={this.state.errorText}
           onChange={this.handleNameInput}
         />
-        <h2>Desired Roles</h2>
-        <CustomRadioSelection
-          objectOfOptions={roleOptions}
-          selectionGroupName='desiredRoles'
-          eventHandler={this.handleDesiredRolesInput}
+        <CustomMultiSelect
+          title='Desired Roles'
+          arrayOfButtonConfigObjects={desiredRolesButtonConfig}
         />
-        <h2>My Main Roles</h2>
-        <CustomRadioSelection
-          objectOfOptions={roleOptions}
-          selectionGroupName='leaderRoles'
-          eventHandler={this.handleLeaderRolesInput}
+        <CustomMultiSelect
+          title='My Main Roles'
+          arrayOfButtonConfigObjects={leaderTeamRolesButtonConfig}
         />
-        <RaisedButton primary label='Create Team' />
+        <RaisedButton primary label='Create Team' onClick={this.postCreateTeam} />
         <RaisedButton secondary label='Cancel' />
       </div>
     )

@@ -2,7 +2,7 @@
   "development": {
     "username": null,
     "password": null,
-    "database": "LoLTeams",
+    "database": "Dev-LoLTeams",
     "host": "127.0.0.1",
     "port": 5432,
     "dialect": "postgres"

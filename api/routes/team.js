@@ -2,6 +2,7 @@
 
 // TODO: Refactor search for team since it's repeated. Use a function given teamID, and error messages to send back
 module.exports = (app) => {
+  // TODO: Handle leader's role selection
   app.post('/create/team', (req, res, err) => {
     const { teamName, desiredRoles, leaderUserID } = req.body
 

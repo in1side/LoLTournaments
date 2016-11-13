@@ -22,7 +22,7 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false
     },
     desiredRoles: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: DataTypes.JSON(),
       allowNull: false,
       validate: {
         isIn: (value) => {

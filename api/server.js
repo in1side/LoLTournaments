@@ -6,6 +6,7 @@ const fs = require('fs')
 const bodyParser = require('body-parser')
 const models = require('./models')
 const constants = require('../constants')
+const cors = require('cors')
 
 // Constants
 global.db = models
@@ -17,7 +18,7 @@ let dbSyncConfig = {
 
 console.log('current env: ', process.env.NODE_ENV)
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'test') {
   console.log('Overwriting DB...')
   dbSyncConfig.force = true
 }
@@ -28,6 +29,7 @@ models.sequelize.sync(dbSyncConfig)
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+app.use(cors())
 
 /**
 * Require all route files in the 'routes' directory.
