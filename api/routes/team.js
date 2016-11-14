@@ -2,6 +2,13 @@
 
 // TODO: Refactor search for team since it's repeated. Use a function given teamID, and error messages to send back
 module.exports = (app) => {
+  app.get('/getAllTeams', (req, res, err) => {
+    db.Team.findAll({ attributes: ['id', 'name', 'members', 'desiredRoles', 'leaderID'], order: '"updatedAt" DESC' })
+    .then((teams) => {
+      res.send({ teams })
+    })
+  })
+
   // TODO: Handle leader's role selection
   app.post('/create/team', (req, res, err) => {
     const { teamName, desiredRoles, leaderUserID } = req.body

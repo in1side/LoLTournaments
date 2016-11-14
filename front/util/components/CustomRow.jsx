@@ -1,21 +1,14 @@
 'use strict'
 
 import React from 'react'
-import { TableRow, TableRowColumn, TableHeaderColumn } from 'material-ui/Table'
+import { TableRow, TableRowColumn } from 'material-ui/Table'
 
-const CustomRow = ({ orderedDataArray, rowNum, isHeaderColumn }) => {
+const CustomRow = ({ dataObject, rowNum }) => {
   let rowColumns = []
 
-  // Fill columns with each piece of data
-  if (isHeaderColumn) {
-    rowColumns = orderedDataArray.map((data, index) => {
-      return <TableHeaderColumn key={`table-row-column${index}${rowNum}`}>{orderedDataArray[index]}</TableHeaderColumn>
-    })
-  } else {
-    rowColumns = orderedDataArray.map((data, index) => {
-      return <TableRowColumn key={`table-row-column${index}${rowNum}`}>{orderedDataArray[index]}</TableRowColumn>
-    })
-  }
+  rowColumns = Object.keys(dataObject).map((attribute, index) => {
+    return <TableRowColumn key={`table-row-column${index}${rowNum}`}>{dataObject[attribute]}</TableRowColumn>
+  })
 
   return (
     <TableRow className='TableRow'>
@@ -25,9 +18,8 @@ const CustomRow = ({ orderedDataArray, rowNum, isHeaderColumn }) => {
 }
 
 CustomRow.propTypes = {
-  orderedDataArray: React.PropTypes.array.isRequired,
-  rowNum: React.PropTypes.number.isRequired,
-  isHeaderColumn: React.PropTypes.bool.isRequired
+  dataObject: React.PropTypes.object.isRequired,
+  rowNum: React.PropTypes.number.isRequired
 }
 
 export default CustomRow

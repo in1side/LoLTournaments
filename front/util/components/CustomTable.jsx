@@ -5,11 +5,12 @@ import { Table, TableBody, TableHeader } from 'material-ui/Table'
 
 // Components
 import CustomRow from './CustomRow'
+import CustomTableHeader from './CustomTableHeader'
 
-const CustomTable = ({ arrayOfColumnNames, arrayOfRowContentArrays }) => {
+const CustomTable = ({ givenColumnNames, arrayOfRowContentObjects }) => {
   // Create table rows
-  const rows = arrayOfRowContentArrays.map((rowContentArray, index) => {
-    return <CustomRow key={`table-row${index}`} orderedDataArray={ rowContentArray } rowNum={index} isHeaderColumn={false} />
+  const rows = arrayOfRowContentObjects.map((rowContentObject, index) => {
+    return <CustomRow key={`table-row${index}`} dataObject={rowContentObject} rowNum={index} isHeaderColumn={false} />
   })
 
   return (
@@ -17,7 +18,7 @@ const CustomTable = ({ arrayOfColumnNames, arrayOfRowContentArrays }) => {
       <Table className='CustomTable'>
         <TableHeader>
           {/* Header Columns */}
-          <CustomRow key={'table-row-1'} orderedDataArray={ arrayOfColumnNames } rowNum={-1} isHeaderColumn />
+          <CustomTableHeader key={'table-row-1'} columnNames={givenColumnNames} rowNum={-1} />
         </TableHeader>
         <TableBody>
           {rows}
@@ -29,8 +30,8 @@ const CustomTable = ({ arrayOfColumnNames, arrayOfRowContentArrays }) => {
 }
 
 CustomTable.propTypes = {
-  arrayOfColumnNames: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  arrayOfRowContentArrays: React.PropTypes.arrayOf(React.PropTypes.array).isRequired
+  givenColumnNames: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  arrayOfRowContentObjects: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
 }
 
 export default CustomTable

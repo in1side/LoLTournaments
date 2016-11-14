@@ -3,11 +3,11 @@
 import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import constants from '../../../constants'
+import constants from '../../constants'
 import 'whatwg-fetch'
 
 // Components
-import CustomMultiSelect from '../../util/components/CustomMultiSelect'
+import CustomMultiSelect from '../util/components/CustomMultiSelect'
 
 export default class CreateTeam extends Component {
   constructor (props) {
@@ -75,7 +75,7 @@ export default class CreateTeam extends Component {
     })
   }
 
-  postCreateTeam = () => {
+  createTeam = () => {
     const { name, desiredRoles } = this.state
 
     const selectedRoles = []
@@ -93,6 +93,9 @@ export default class CreateTeam extends Component {
         desiredRoles: selectedRoles,
         leaderUserID: '261a3e3c-dd27-4fa3-bcda-4431138d47ae' // TODO: Get leader user id
       })
+    })
+    .then((response) => {
+      return response.json()
     })
     .then((result) => {
       console.log(result)
@@ -124,7 +127,7 @@ export default class CreateTeam extends Component {
           title='My Main Roles'
           arrayOfButtonConfigObjects={leaderTeamRolesButtonConfig}
         />
-        <RaisedButton primary label='Create Team' onClick={this.postCreateTeam} />
+        <RaisedButton primary label='Create Team' onClick={this.createTeam} />
         <RaisedButton secondary label='Cancel' />
       </div>
     )

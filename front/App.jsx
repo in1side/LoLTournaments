@@ -10,6 +10,7 @@ import Teams from './Teams'
 
 // Test
 import CreateTeam from './Teams/CreateTeam'
+import TeamInfo from './Teams/TeamInfo'
 
 export default class App extends Component {
   render () {
@@ -19,6 +20,7 @@ export default class App extends Component {
         <RaisedButton label='Create Team' onClick={() => console.log('Hello World!')} primary />
         <Teams />
         <CreateTeam />
+        <TeamInfo teamInfoObject={{ name: 'Test', members: ['me', 'you'], lol: 'jhafjkdahlf' }} />
       </div>
     )
   }
