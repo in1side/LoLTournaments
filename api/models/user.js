@@ -4,11 +4,6 @@ const constants = require('../../constants')
 
 module.exports = function (sequelize, DataTypes) {
   const User = sequelize.define('User', {
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUIDV4
-    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -38,7 +33,7 @@ module.exports = function (sequelize, DataTypes) {
       }
     },
     teams: {
-      type: DataTypes.ARRAY(DataTypes.UUID),
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       validate: {
         isArray: true
       }

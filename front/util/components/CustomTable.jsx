@@ -7,11 +7,14 @@ import { Table, TableBody, TableHeader } from 'material-ui/Table'
 import CustomRow from './CustomRow'
 import CustomTableHeader from './CustomTableHeader'
 
-const CustomTable = ({ givenColumnNames, arrayOfRowContentObjects }) => {
+const CustomTable = ({ givenColumnNames, rowContents }) => {
+  let rows
   // Create table rows
-  const rows = arrayOfRowContentObjects.map((rowContentObject, index) => {
-    return <CustomRow key={`table-row${index}`} dataObject={rowContentObject} rowNum={index} isHeaderColumn={false} />
-  })
+  if (rowContents !== null) {
+    rows = rowContents.map((rowContentObject, index) => {
+      return <CustomRow key={`table-row${index}`} dataObject={rowContentObject} rowNum={index} isHeaderColumn={false} />
+    })
+  }
 
   return (
     <div>
@@ -31,7 +34,7 @@ const CustomTable = ({ givenColumnNames, arrayOfRowContentObjects }) => {
 
 CustomTable.propTypes = {
   givenColumnNames: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  arrayOfRowContentObjects: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
+  rowContents: React.PropTypes.arrayOf(React.PropTypes.object)
 }
 
 export default CustomTable

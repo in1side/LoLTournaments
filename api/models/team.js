@@ -4,11 +4,6 @@ const constants = require('../../constants')
 
 module.exports = function (sequelize, DataTypes) {
   const Team = sequelize.define('Team', {
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUIDV4
-    },
     name: {
       type: DataTypes.STRING(constants.MAX_TEAM_NAME_LENGTH),
       allowNull: false,
@@ -17,12 +12,12 @@ module.exports = function (sequelize, DataTypes) {
         notEmpty: true
       }
     },
-    members: {
-      type: DataTypes.ARRAY(DataTypes.UUID),
+    memberIDs: {
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: false
     },
     desiredRoles: {
-      type: DataTypes.JSON(),
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
       validate: {
         isIn: (value) => {
@@ -36,7 +31,7 @@ module.exports = function (sequelize, DataTypes) {
       }
     },
     leaderID: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {

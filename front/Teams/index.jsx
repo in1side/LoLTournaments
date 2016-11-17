@@ -11,9 +11,11 @@ export default class Teams extends Component {
     super(props)
 
     this.state = {
-      teams: []
+      allTeamsInfo: []
     }
+  }
 
+  componentWillMount () {
     this.getAllTeams()
   }
 
@@ -25,9 +27,9 @@ export default class Teams extends Component {
       return response.json()
     })
     .then((result) => {
-      const { teams } = result
+      const { allTeamsInfo } = result
 
-      this.setState({ teams })
+      this.setState({ allTeamsInfo })
     })
     .catch((error) => {
       console.log(error)
@@ -36,14 +38,14 @@ export default class Teams extends Component {
 
   // TODO: Link team name and leader to respective info page
   render () {
-    const { teams } = this.state
-
+    const { allTeamsInfo } = this.state
+    console.log(allTeamsInfo);
     return (
       <div className='Teams'>
         <h2>Testing Table</h2>
         <CustomTable
           givenColumnNames={['id', 'name', 'members', 'desiredRoles', 'leaderID']}
-          arrayOfRowContentObjects={teams}
+          rowContents={allTeamsInfo}
         />
       </div>
     )

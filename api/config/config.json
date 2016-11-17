@@ -2,10 +2,11 @@
   "development": {
     "username": null,
     "password": null,
-    "database": "Dev-LoLTeams",
+    "database": "Test-LoLTeams",
     "host": "127.0.0.1",
     "port": 5432,
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "seederStorage": "sequelize"
   },
   "test": {
     "username": null,
@@ -13,7 +14,8 @@
     "database": "Test-LoLTeams",
     "host": "127.0.0.1",
     "port": 5432,
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "seederStorage": "sequelize"
   },
   "production": {
     "username": null,

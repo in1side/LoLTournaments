@@ -10,7 +10,8 @@ League of Legends web app that allows players to create, manage and coordinate t
 6. Change DB to catch errors and not crash
 7. ~~Show list of teams~~
 8. ~~Basic team info page~~
-9. Limit db results to only necessary attributes
+9. Limit DB results to only necessary attributes
+10. Seed file for testing DB
 
 ## Stuff to Refactor:
 1. Routes since there is some repeated code

@@ -24,7 +24,6 @@ export default class CreateTeam extends Component {
       name: '',
       desiredRoles: Object.assign({}, initialRolesState),
       leaderUsername: '',
-      leaderTeamRoles: Object.assign({}, initialRolesState),
       errorText: ''
     }
   }
@@ -53,19 +52,6 @@ export default class CreateTeam extends Component {
 
     this.setState({
       desiredRoles: newDesiredRoles
-    })
-  }
-
-  handleLeaderTeamRolesInputUsingButtonValue = (event, isInputChecked) => {
-    event.preventDefault()
-
-    const newLeaderTeamRoles = this.state.leaderTeamRoles
-    const selectedRole = event.target.value
-
-    newLeaderTeamRoles[selectedRole] = !newLeaderTeamRoles[selectedRole]
-
-    this.setState({
-      leaderTeamRoles: newLeaderTeamRoles
     })
   }
 
@@ -106,9 +92,8 @@ export default class CreateTeam extends Component {
   }
 
   render () {
-    const { desiredRoles, leaderTeamRoles } = this.state
+    const { desiredRoles } = this.state
     const desiredRolesButtonConfig = this.generateMultiSelectButtonConfigs(desiredRoles, this.handleDesiredRolesInputUsingButtonValue)
-    const leaderTeamRolesButtonConfig = this.generateMultiSelectButtonConfigs(leaderTeamRoles, this.handleLeaderTeamRolesInputUsingButtonValue)
 
     return (
       <div className='CreateTeam'>
@@ -122,10 +107,6 @@ export default class CreateTeam extends Component {
         <CustomMultiSelect
           title='Desired Roles'
           arrayOfButtonConfigObjects={desiredRolesButtonConfig}
-        />
-        <CustomMultiSelect
-          title='My Main Roles'
-          arrayOfButtonConfigObjects={leaderTeamRolesButtonConfig}
         />
         <RaisedButton primary label='Create Team' onClick={this.createTeam} />
         <RaisedButton secondary label='Cancel' />

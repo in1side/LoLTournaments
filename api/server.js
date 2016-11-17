@@ -18,7 +18,7 @@ let dbSyncConfig = {
 
 console.log('current env: ', process.env.NODE_ENV)
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV !== 'production') {
   console.log('Overwriting DB...')
   dbSyncConfig.force = true
 }
