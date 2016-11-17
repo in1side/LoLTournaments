@@ -7,6 +7,11 @@ const findUserByID = (userID) => {
   .then((user) => user)
 }
 
+const findTeamByID = (teamID) => {
+  return db.Team.findById(teamID)
+    .then((team) => team)
+}
+
 const findOrCreateTeamWithGivenLeaderTeamNameAndDesiredRoles = ({ leaderID, teamName, desiredRoles }) => {
   return db.Team.findOrCreate({ where: { leaderID, name: teamName }, defaults: { memberIDs: [leaderID], desiredRoles } })
     .spread((team, isSuccessful) => {
@@ -30,20 +35,17 @@ const findAllTeamsAndSelectAttributes = (attributes, sortOrder) => {
 module.exports = (app) => {
   // NOTE: Prime example of nice code
   app.get('/getAllTeams', (req, res, err) => {
-    // db.Team.findAll({ attributes: ['id', 'name', 'memberIDs', 'desiredRoles', 'leaderID'], order: '"updatedAt" DESC' })
-    // .then((teams) => {
-      const teams = findAllTeamsAndSelectAttributes(['id', 'name', 'memberIDs', 'desiredRoles', 'leaderID'], '"updatedAt" DESC')
+    const teams = findAllTeamsAndSelectAttributes(['id', 'name', 'memberIDs', 'desiredRoles', 'leaderID'], '"updatedAt" DESC')
 
-      if (teams !== undefined) {
-        // Replace leader and member id's into string usernames
-        teams.forEach((team) => {
-          team.members = team.memberIDs.map((memberID) => findUserByID(memberID))
-          team.leader = findUserByID(team.leaderID).username
-        })
-      }
+    if (teams !== undefined) {
+      // Replace leader and member id's into string usernames
+      teams.forEach((team) => {
+        team.members = team.memberIDs.map((memberID) => findUserByID(memberID))
+        team.leader = findUserByID(team.leaderID).username
+      })
+    }
 
-      res.send({ teams })
-    // })
+    res.send({ teams })
   })
 
   app.post('/create/team', (req, res, err) => {
@@ -56,15 +58,17 @@ module.exports = (app) => {
   })
 
   app.delete('/delete/team', (req, res, err) => {
-    const { teamID, leaderUserID } = req.body
+    const { teamID, leaderID } = req.body
+    const result = {}
 
-    db.Team.findById(teamID)
-    .then((team) => {
-      if (!team) return res.send({ message: 'Failed team deletion: team doesn\'t exist.' })
-      if (team.leaderID !== leaderUserID) return res.send({ message: 'Failed team deletion: only team leader has permission to delete team.' })
-      team.destroy()
-      return res.send({ message: 'Successfully deleted team.' })
-    })
+    const team = findTeamByID(teamID)
+    if (team === null) result.message = 'Failed team deletion: team doesn\'t exist.'
+    if (team.leaderID !== leaderID) result.message = 'Failed team deletion: only team leader has permission to delete team.'
+
+    team.destroy()
+    result.message = 'Successfully deleted team.'
+
+    return res.send(result)
   })
 
   app.post('/search/teamID', (req, res, err) => {

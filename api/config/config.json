@@ -5,8 +5,7 @@
     "database": "Test-LoLTeams",
     "host": "127.0.0.1",
     "port": 5432,
-    "dialect": "postgres",
-    "seederStorage": "sequelize"
+    "dialect": "postgres"
   },
   "test": {
     "username": null,
