@@ -1,18 +1,15 @@
 'use strict'
+// NOTE: Edited by Alexei Darmin
 
-// Format members array into { userID: name, isTeamLeader: bool },
-// NOTE: Editted by Alexei Darmin
 const findUserByID = (userID) => {
   return db.User.findById(userID)
-  .then((user) => user)
 }
 
 const findTeamByID = (teamID) => {
   return db.Team.findById(teamID)
-    .then((team) => team)
 }
 
-const findOrCreateTeamWithGivenLeaderTeamNameAndDesiredRoles = ({ leaderID, teamName, desiredRoles }) => {
+const findOrCreateTeamWithGivenLeaderIDTeamNameAndDesiredRoles = ({ leaderID, teamName, desiredRoles }) => {
   return db.Team.findOrCreate({ where: { leaderID, name: teamName }, defaults: { memberIDs: [leaderID], desiredRoles } })
     .spread((team, isSuccessful) => {
       if (!isSuccessful) return null
@@ -21,62 +18,83 @@ const findOrCreateTeamWithGivenLeaderTeamNameAndDesiredRoles = ({ leaderID, team
   )
 }
 
-/**
-* @param {attributes} - array of strings
-* @param {sortOrder} - string
-* @return {team} - object
-*/
+// Return array of teams objects with specified attributes in specified sortOrder
 const findAllTeamsAndSelectAttributes = (attributes, sortOrder) => {
-  db.Team.findAll({ attributes, order: sortOrder })
-  .then((teams) => teams)
+  return db.Team.findAll({ attributes, order: sortOrder })
 }
 
-// TODO: Refactor search for team since it's repeated. Use a function given teamID, and error messages to send back
+// Sets team.members attribute with a list of users that are part of the team
+// Sets team.leader to the user who is the team's leader
+// return team with the above two attributes filled
+const getMembersUsernamesAndSaveToTeam = (team) => {
+  return Promise.all(team.memberIDs.map((memberID) => {
+    return findUserByID(memberID).then((user) => {
+      if (memberID === team.leaderID) team.dataValues.leaderUsername = user.username // Assign leader username if maching memberID
+      return user.username
+    })
+  })).then((members) => {
+    team.dataValues.memberUsernames = members
+    return team
+  })
+}
+
+// Return promise of updated instance or null if failed.
+const updateInstance = (instance, updatedValues) => {
+  return instance.update(updatedValues)
+}
+
 module.exports = (app) => {
   // NOTE: Prime example of nice code
   app.get('/getAllTeams', (req, res, err) => {
-    const teams = findAllTeamsAndSelectAttributes(['id', 'name', 'memberIDs', 'desiredRoles', 'leaderID'], '"updatedAt" DESC')
+    findAllTeamsAndSelectAttributes(['id', 'name', 'memberIDs', 'desiredRoles', 'leaderID'], '"updatedAt" DESC')
+    .then((teams) => {
+      if (teams === undefined) return res.send({ teams: [], message: 'Couldn\'t find any teams.' })
 
-    if (teams !== undefined) {
-      // Replace leader and member id's into string usernames
-      teams.forEach((team) => {
-        team.members = team.memberIDs.map((memberID) => findUserByID(memberID))
-        team.leader = findUserByID(team.leaderID).username
+      // Get leader and members usernames via id's
+      Promise.all(teams.map((team) => getMembersUsernamesAndSaveToTeam(team)))
+      .then((allTeams) => {
+        res.send({ teams: allTeams })
       })
-    }
-
-    res.send({ teams })
+    })
   })
 
   app.post('/create/team', (req, res, err) => {
-    if (findUserByID(req.body.leaderID) === null) return res.send({ message: 'Failed team creation: given leader\'s account does not exist.' })
+    findUserByID(req.body.leaderID)
+    .then((user) => {
+      if (user === null) return res.send({ message: 'Failed team creation: given leader\'s account does not exist.' })
 
-    const team = findOrCreateTeamWithGivenLeaderTeamNameAndDesiredRoles(req.body)
-    team === null
-      ? res.send({ message: 'Failed team creation: leader already has a team with same name.' })
-      : res.send(team)
+      findOrCreateTeamWithGivenLeaderIDTeamNameAndDesiredRoles(req.body)
+      .then((team) => {
+        team === null
+          ? res.send({ message: 'Failed team creation: leader already has a team with same name.' })
+          : res.send(team)
+      })
+    })
   })
 
   app.delete('/delete/team', (req, res, err) => {
     const { teamID, leaderID } = req.body
     const result = {}
 
-    const team = findTeamByID(teamID)
-    if (team === null) result.message = 'Failed team deletion: team doesn\'t exist.'
-    if (team.leaderID !== leaderID) result.message = 'Failed team deletion: only team leader has permission to delete team.'
+    findTeamByID(teamID)
+    .then((team) => {
+      if (team === null) result.message = 'Failed team deletion: team doesn\'t exist.'
+      if (team.leaderID !== leaderID) result.message = 'Failed team deletion: only team leader has permission to delete team.'
 
-    team.destroy()
-    result.message = 'Successfully deleted team.'
+      team.destroy()
+      result.message = 'Successfully deleted team.'
 
-    return res.send(result)
+      res.send(result)
+    })
   })
 
   app.post('/search/teamID', (req, res, err) => {
-    const { teamID } = req.body
-
-    db.Team.findById(teamID)
+    findTeamByID(req.body.teamID)
     .then((team) => {
-      team ? res.send(team) : res.send({ message: 'Team not found.' })
+      getMembersUsernamesAndSaveToTeam(team)
+      .then((teamWithMemberUsernames) => {
+        teamWithMemberUsernames ? res.send(teamWithMemberUsernames) : res.send({ message: 'Team not found.' })
+      })
     })
   })
 
@@ -89,40 +107,17 @@ module.exports = (app) => {
     })
   })
 
-  /** TODO: Ways to edit team (only leader can make changes):
-  * - name
-  * - leaderID
-  */
-  app.post('/edit/teamMembers', (req, res, err) => {
-    const { teamID, leaderUserID, membersArray } = req.body
+  app.post('/edit/team', (req, res, err) => {
+    const { teamID, leaderID, updatedValues } = req.body
 
-    db.Team.findById(teamID)
+    findTeamByID(teamID)
     .then((team) => {
-      if (!team) return res.send({ message: 'Team not found' })
-      if (leaderUserID !== team.leaderID) return res.send({ message: 'Failed to edit team members: only team leader has permission.' })
+      if (team === null) return res.send({ message: 'Team not found' })
+      if (leaderID !== team.leaderID) return res.send({ message: 'Failed to edit team members: only team leader has permission.' })
 
-      team.update({
-        memberIDs: membersArray
-      })
-      .then(() => {
-        return res.send(team)
-      })
-    })
-  })
-
-  app.post('/edit/teamDesiredRoles', (req, res, err) => {
-    const { teamID, leaderUserID, desiredRoles } = req.body
-
-    db.Team.findById(teamID)
-    .then((team) => {
-      if (!team) return res.send({ message: 'Team not found' })
-      if (leaderUserID !== team.leaderID) return res.send({ message: 'Failed to edit team available roles: only team leader has permission.' })
-
-      team.update({
-        desiredRoles
-      })
-      .then(() => {
-        return res.send(team)
+      updateInstance(team, updatedValues)
+      .then((team) => {
+        res.send(team)
       })
     })
   })
