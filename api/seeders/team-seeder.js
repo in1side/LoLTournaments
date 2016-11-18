@@ -3,7 +3,6 @@
 module.exports = {
   up: function (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('teams', [{
-      id: 1,
       name: 'team1',
       memberIDs: [1],
       desiredRoles: ['TOP', 'MID', 'JUNG'],

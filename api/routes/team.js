@@ -1,15 +1,12 @@
 'use strict'
 // NOTE: Edited by Alexei Darmin
-
-const findUserByID = (userID) => {
-  return db.User.findById(userID)
-}
+const util = require('../util')
 
 const findTeamByID = (teamID) => {
   return db.Team.findById(teamID)
 }
 
-const findOrCreateTeamWithGivenLeaderIDTeamNameAndDesiredRoles = ({ leaderID, teamName, desiredRoles }) => {
+const findOrCreateTeam = ({ leaderID, teamName, desiredRoles }) => {
   return db.Team.findOrCreate({ where: { leaderID, name: teamName }, defaults: { memberIDs: [leaderID], desiredRoles } })
     .spread((team, isSuccessful) => {
       if (!isSuccessful) return null
@@ -28,7 +25,7 @@ const findAllTeamsAndSelectAttributes = (attributes, sortOrder) => {
 // return team with the above two attributes filled
 const getMembersUsernamesAndSaveToTeam = (team) => {
   return Promise.all(team.memberIDs.map((memberID) => {
-    return findUserByID(memberID).then((user) => {
+    return util.findUserByID(memberID).then((user) => {
       if (memberID === team.leaderID) team.dataValues.leaderUsername = user.username // Assign leader username if maching memberID
       return user.username
     })
@@ -59,11 +56,11 @@ module.exports = (app) => {
   })
 
   app.post('/create/team', (req, res, err) => {
-    findUserByID(req.body.leaderID)
+    util.findUserByID(req.body.leaderID)
     .then((user) => {
       if (user === null) return res.send({ message: 'Failed team creation: given leader\'s account does not exist.' })
 
-      findOrCreateTeamWithGivenLeaderIDTeamNameAndDesiredRoles(req.body)
+      findOrCreateTeam(req.body)
       .then((team) => {
         team === null
           ? res.send({ message: 'Failed team creation: leader already has a team with same name.' })
