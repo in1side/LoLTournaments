@@ -4,6 +4,7 @@
   "description": "Create and manage your own League of Legends teams.",
   "main": "index.js",
   "scripts": {
+    "seed-db": "node_modules/.bin/sequelize db:seed:all --config api/config/config.json --seeders-path api/seeders",
     "dev-front": "NODE_ENV=development node_modules/.bin/webpack-dev-server",
     "dev-server": "NODE_ENV=development nodemon ./api/server.js",
     "test-api": "NODE_ENV=test ava --watch",
