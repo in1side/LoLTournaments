@@ -26,11 +26,11 @@ const findAllTeamsAndSelectAttributes = (attributes, sortOrder) => {
 const getMembersUsernamesAndSaveToTeam = (team) => {
   return Promise.all(team.memberIDs.map((memberID) => {
     return util.findUserByID(memberID).then((user) => {
-      if (memberID === team.leaderID) team.dataValues.leaderUsername = user.username // Assign leader username if maching memberID
+      if (memberID === team.leaderID) team.dataValues.leader = user.username // Assign leader username if maching memberID
       return user.username
     })
   })).then((members) => {
-    team.dataValues.memberUsernames = members
+    team.dataValues.members = members
     return team
   })
 }

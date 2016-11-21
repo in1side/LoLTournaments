@@ -55,7 +55,8 @@ module.exports = {
     }),
     new webpack.ProvidePlugin({
       ReactDOM: 'react-dom',
-      React: 'react'
+      React: 'react',
+      Immutable: 'immutable'
     })
   ]
 }

@@ -11,7 +11,7 @@ const CustomRow = ({ dataObject, rowNum }) => {
   })
 
   return (
-    <TableRow className='TableRow'>
+    <TableRow className='TableRow' onClick={() => console.log(dataObject)}>
       {rowColumns}
     </TableRow>
   )
@@ -19,7 +19,8 @@ const CustomRow = ({ dataObject, rowNum }) => {
 
 CustomRow.propTypes = {
   dataObject: React.PropTypes.object.isRequired,
-  rowNum: React.PropTypes.number.isRequired
+  rowNum: React.PropTypes.number.isRequired,
+  onRowClick: React.PropTypes.func
 }
 
 export default CustomRow

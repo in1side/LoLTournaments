@@ -12,7 +12,7 @@ const CustomTable = ({ givenColumnNames, rowContents }) => {
   // Create table rows
   if (rowContents !== null) {
     rows = rowContents.map((rowContentObject, index) => {
-      return <CustomRow key={`table-row${index}`} dataObject={rowContentObject} rowNum={index} isHeaderColumn={false} />
+      return <CustomRow key={`table-row${index}`} dataObject={rowContentObject} rowNum={index} isHeaderColumn={false}/>
     })
   }
 
@@ -34,7 +34,8 @@ const CustomTable = ({ givenColumnNames, rowContents }) => {
 
 CustomTable.propTypes = {
   givenColumnNames: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  rowContents: React.PropTypes.arrayOf(React.PropTypes.object)
+  rowContents: React.PropTypes.arrayOf(React.PropTypes.object),
+  onRowClick: React.PropTypes.func
 }
 
 export default CustomTable
