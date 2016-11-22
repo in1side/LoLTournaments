@@ -64,7 +64,7 @@ module.exports = (app) => {
       .then((team) => {
         team === null
           ? res.send({ message: 'Failed team creation: leader already has a team with same name.' })
-          : res.send(team)
+          : getMembersUsernamesAndSaveToTeam(team).then((result) => res.send(result))
       })
     })
   })

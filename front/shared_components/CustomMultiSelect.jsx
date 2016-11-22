@@ -12,8 +12,8 @@ import Checkbox from 'material-ui/Checkbox'
 // },
 //   ...
 // ]
-const CustomMultiSelect = ({ arrayOfButtonConfigObjects, title }) => {
-  const buttons = arrayOfButtonConfigObjects.map((config, index) => {
+const CustomMultiSelect = ({ buttonConfigs, title }) => {
+  const buttons = buttonConfigs.map((config, index) => {
     return <Checkbox
       key={`${title}-multi-select-${index}`}
       label={config.label}
@@ -32,7 +32,7 @@ const CustomMultiSelect = ({ arrayOfButtonConfigObjects, title }) => {
 }
 
 CustomMultiSelect.propTypes = {
-  arrayOfButtonConfigObjects: React.PropTypes.arrayOf(React.PropTypes.object)
+  buttonConfigs: React.PropTypes.arrayOf(React.PropTypes.object)
 }
 
 export default CustomMultiSelect

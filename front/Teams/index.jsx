@@ -10,7 +10,6 @@ import CreateTeam from './CreateTeam'
 
 // Actions
 import { setTableColumns, setTeams, deleteTeams, deleteTableColumns } from './ducks/homePage'
-import { toggleView } from './ducks/createTeam'
 
 export class TeamsHomePage extends Component {
   componentWillMount () {
@@ -64,12 +63,12 @@ export class TeamsHomePage extends Component {
 
   // TODO: Link team name and leader to respective info page
   render () {
-    const { teams, tableColumns, isCreateTeamActive, toggleViewCreateTeams } = this.props
+    const { teams, tableColumns, isCreateTeamActive } = this.props
 
     if (isCreateTeamActive) {
       return (
         <div className='TeamsHomePage'>
-          <CreateTeam toggleView={toggleViewCreateTeams} />
+          <CreateTeam />
         </div>
       )
     }
@@ -101,8 +100,7 @@ TeamsHomePage.propTypes = {
   // Hides annoying warnings about functions
   setTeams: React.PropTypes.func,
   setTableColumns: React.PropTypes.func,
-  clearState: React.PropTypes.func,
-  toggleViewCreateTeams: React.PropTypes.func
+  clearState: React.PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -126,9 +124,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     clearState: () => {
       dispatch(deleteTableColumns())
       dispatch(deleteTeams())
-    },
-    toggleViewCreateTeams: () => {
-      dispatch(toggleView())
     }
   }
 }
