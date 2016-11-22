@@ -10,8 +10,9 @@ import { connect } from 'react-redux'
 import CustomMultiSelect from '../shared_components/CustomMultiSelect'
 
 // Action Creators
-import { setName, toggleDesiredRole, setErrorMessage, toggleView } from './ducks/createTeam'
+import { setName, toggleDesiredRole, setErrorMessage, toggleView, resetDesiredRoles, deleteErrorMessage, deleteName } from './ducks/createTeam'
 import { appendToTeam } from './ducks/homePage'
+
 export class CreateTeam extends Component {
   createTeam = () => {
     const { name, desiredRoles } = this.props
@@ -36,9 +37,10 @@ export class CreateTeam extends Component {
       return response.json()
     })
     .then((result) => {
-      const { appendToTeam, toggleViewCreateTeam } = this.props
+      const { appendToTeam, toggleViewCreateTeam, resetForm } = this.props
       appendToTeam(result)
       toggleViewCreateTeam()
+      resetForm()
     })
     .catch((error) => {
       this.props.setErrorMessage(error)
@@ -88,7 +90,8 @@ CreateTeam.propTypes = {
   toggleDesiredRole: React.PropTypes.func,
   setErrorMessage: React.PropTypes.func,
   toggleViewCreateTeam: React.PropTypes.func,
-  appendToTeam: React.PropTypes.func
+  appendToTeam: React.PropTypes.func,
+  resetForm: React.PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -117,6 +120,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     appendToTeam: (team) => {
       dispatch(appendToTeam(team))
+    },
+    resetForm: () => {
+      dispatch(deleteName())
+      dispatch(deleteErrorMessage())
+      dispatch(resetDesiredRoles())
     }
   }
 }

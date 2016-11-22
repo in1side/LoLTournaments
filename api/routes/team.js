@@ -64,7 +64,10 @@ module.exports = (app) => {
       .then((team) => {
         team === null
           ? res.send({ message: 'Failed team creation: leader already has a team with same name.' })
-          : getMembersUsernamesAndSaveToTeam(team).then((result) => res.send(result))
+          // TODO: Refactor this to extract the right attributes
+          : getMembersUsernamesAndSaveToTeam(team).then(({ id, name, memberIDs, desiredRoles, leaderID, leader, members }) => {
+            res.send({ id, name, memberIDs, desiredRoles, leaderID, leader: team.dataValues.leader, members: team.dataValues.members })
+          })
       })
     })
   })

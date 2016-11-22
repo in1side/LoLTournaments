@@ -5,6 +5,7 @@ const TOGGLE_VIEW = 'app/Teams/CreateTeam/TOGGLE_VIEW'
 const SET_NAME = 'app/Teams/CreateTeam/SET_NAME'
 const DEL_NAME = 'app/Teams/CreateTeam/DEL_NAME'
 const TOGGLE_DESIRED_ROLE = 'app/Teams/CreateTeam/TOGGLE_DESIRED_ROLE'
+const RESET_DESIRED_ROLES = 'app/Teams/CreateTeam/RESET_DESIRED_ROLES'
 const SET_ERR_MESSAGE = 'app/Teams/CreateTeam/SET_ERR_MESSAGE'
 const DEL_ERR_MESSAGE = 'app/Teams/CreateTeam/DEL_ERR_MESSAGE'
 
@@ -36,6 +37,15 @@ export default function CreateTeamReducer (state = createTeamInitialState, actio
       const newDesiredRoles = state.get('desiredRoles').set(action.role, newRoleSelection)
       const newState = state.set('desiredRoles', newDesiredRoles)
       return newState
+    case RESET_DESIRED_ROLES:
+      return state.set('desiredRoles', Immutable.Map({
+        ADC: false,
+        SUPP: false,
+        TOP: false,
+        MID: false,
+        JUNG: false,
+        ANY: false
+      }))
     case SET_ERR_MESSAGE:
       return state.set('errorMessage', action.message)
     case DEL_ERR_MESSAGE:
@@ -69,6 +79,10 @@ export function toggleDesiredRole (role) {
     type: TOGGLE_DESIRED_ROLE,
     role
   }
+}
+
+export function resetDesiredRoles () {
+  return { type: RESET_DESIRED_ROLES }
 }
 
 export function setErrorMessage (message) {
