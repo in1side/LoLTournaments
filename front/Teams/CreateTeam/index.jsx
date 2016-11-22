@@ -3,11 +3,11 @@
 import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import constants from '../../constants'
+import constants from '../../../constants'
 import 'whatwg-fetch'
 
 // Components
-import CustomMultiSelect from '../util/components/CustomMultiSelect'
+import CustomMultiSelect from '../../shared_components/CustomMultiSelect'
 
 export default class CreateTeam extends Component {
   constructor (props) {
@@ -93,6 +93,7 @@ export default class CreateTeam extends Component {
 
   render () {
     const { desiredRoles } = this.state
+    const { toggleView } = this.props
     const desiredRolesButtonConfig = this.generateMultiSelectButtonConfigs(desiredRoles, this.handleDesiredRolesInputUsingButtonValue)
 
     return (
@@ -109,7 +110,7 @@ export default class CreateTeam extends Component {
           arrayOfButtonConfigObjects={desiredRolesButtonConfig}
         />
         <RaisedButton primary label='Create Team' onClick={this.createTeam} />
-        <RaisedButton secondary label='Cancel' />
+        <RaisedButton secondary label='Cancel' onClick={toggleView} />
       </div>
     )
   }

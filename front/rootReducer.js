@@ -1,18 +1,20 @@
 'use strict'
 
 // store {
-//   isViewCreateTeam: bool,
-//   isViewAllTeams: bool,
-//   isViewTeamInfo: bool
+//   isViewCreateTeam: {},
+//   isViewAllTeams: {},
+//   isViewTeamInfo: {}
 // }
 
 import { combineReducers } from 'redux'
 
 // Reducers
-import CreateTeamReducer from './Teams/ducks'
+import TeamsReducer from './Teams/ducks'
+import NavigationReducer from './Navigation/ducks'
 
 const rootReducer = combineReducers({
-  CreateTeamReducer
+  Teams: TeamsReducer,
+  isNavigationActive: NavigationReducer
 })
 
 export default rootReducer

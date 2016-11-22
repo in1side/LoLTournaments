@@ -2,22 +2,22 @@
 
 import React, { Component } from 'react'
 import 'whatwg-fetch'
+import { connect } from 'react-redux'
 
 // Components
-import CustomTable from '../util/components/CustomTable'
+import CustomTable from '../shared_components/CustomTable'
+import CreateTeam from './CreateTeam'
 
-export default class Teams extends Component {
-  constructor (props) {
-    super(props)
+// Actions
+import { setTableColumns, setTeams, deleteTeams, deleteTableColumns, toggleViewCreateTeams } from './ducks'
 
-    this.state = {
-      columns: [],
-      teams: []
-    }
-  }
-
+export class TeamsHomePage extends Component {
   componentWillMount () {
     this.getAllTeams()
+  }
+
+  componentWillUnmount () {
+    this.props.clearState()
   }
 
   getAllTeams = () => {
@@ -38,7 +38,8 @@ export default class Teams extends Component {
       //   return team
       // })
 
-      this.setState({ teams: teams, columns: this.generateColumnNames(teams) })
+      this.props.setTableColumns(this.generateColumnNames(teams))
+      this.props.setTeams(teams)
     })
     .catch((error) => {
       console.log(error)
@@ -62,20 +63,28 @@ export default class Teams extends Component {
 
   // TODO: Link team name and leader to respective info page
   render () {
-    const { teams, columns } = this.state
-    if ((teams.length === 0) && (columns.length === 0)) {
+    const { teams, tableColumns, isCreateTeamActive, toggleViewCreateTeams } = this.props
+
+    if (isCreateTeamActive) {
       return (
-        <div className='Teams'>
+        <div className='TeamsHomePage'>
+          <CreateTeam toggleView={toggleViewCreateTeams} />
+        </div>
+      )
+    }
+    if ((teams.length === 0) && (tableColumns.length === 0)) {
+      return (
+        <div className='TeamsHomePage'>
           <h2>All Teams</h2>
           <h2>No Teams Exist</h2>
         </div>
       )
     } else {
       return (
-        <div className='Teams'>
+        <div className='TeamsHomePage'>
           <h2>All Teams</h2>
           <CustomTable
-            givenColumnNames={columns}
+            givenColumnNames={tableColumns}
             rowContents={teams}
           />
         </div>
@@ -83,3 +92,47 @@ export default class Teams extends Component {
     }
   }
 }
+
+TeamsHomePage.propTypes = {
+  tableColumns: React.PropTypes.array,
+  teams: React.PropTypes.array.isRequired,
+  isCreateTeamActive: React.PropTypes.bool,
+  // Hides annoying warnings about functions
+  setTeams: React.PropTypes.func,
+  setTableColumns: React.PropTypes.func,
+  clearState: React.PropTypes.func
+}
+
+const mapStateToProps = (state, ownProps) => {
+  const { Teams } = state
+  return {
+    tableColumns: Teams.get('tableColumns'),
+    teams: Teams.get('teams'),
+    isCreateTeamActive: Teams.get('isCreateTeamActive')
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    setTableColumns: (columns) => {
+      dispatch(setTableColumns(columns))
+    },
+    setTeams: (teams) => {
+      dispatch(setTeams(teams))
+    },
+    clearState: () => {
+      dispatch(deleteTableColumns())
+      dispatch(deleteTeams())
+    },
+    toggleViewCreateTeams: () => {
+      dispatch(toggleViewCreateTeams())
+    }
+  }
+}
+
+const connectedTeamsHomePage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TeamsHomePage)
+
+export default connectedTeamsHomePage

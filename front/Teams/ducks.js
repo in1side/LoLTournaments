@@ -1,24 +1,25 @@
 'use strict'
 
 // Actions
-const TOGGLE_VIEW = 'app/createTeam/TOGGLE_VIEW'
-const SET_TABLE_COLS = 'app/createTeam/SET_TABLE_COLS'
-const SET_TEAMS = 'app/createTeam/SET_TEAMS'
-const DEL_TABLE_COLS = 'app/createTeam/DEL_TABLE_COLS'
-const DEL_TEAMS = 'app/createTeam/DEL_TEAMS'
+// TODO: Write separate actions for view all teams and create teams
+const TOGGLE_VIEW_CREATE_TEAMS = 'app/createTeams/TOGGLE_VIEW_CREATE_TEAMS'
+const SET_TABLE_COLS = 'app/Teams/SET_TABLE_COLS'
+const SET_TEAMS = 'app/Teams/SET_TEAMS'
+const DEL_TABLE_COLS = 'app/Teams/DEL_TABLE_COLS'
+const DEL_TEAMS = 'app/Teams/DEL_TEAMS'
 
 // Reducer
 const intialState = Immutable.Map({
-  isActive: false,
+  isCreateTeamActive: false,
   tableColumns: [],
   teams: []
 })
 
-export default function CreateTeamReducer (state = intialState, action = {}) {
+export default function TeamsReducer (state = intialState, action = {}) {
   switch (action.type) {
-    case TOGGLE_VIEW:
-      const updatedIsActive = !state.isActive
-      return state.set('isActive', updatedIsActive)
+    case TOGGLE_VIEW_CREATE_TEAMS:
+      const updatedIsActive = !state.get('isCreateTeamActive')
+      return state.set('isCreateTeamActive', updatedIsActive)
     case SET_TABLE_COLS:
       return state.set('tableColumns', action.columns)
     case SET_TEAMS:
@@ -33,8 +34,8 @@ export default function CreateTeamReducer (state = intialState, action = {}) {
 }
 
 // Action Creators
-export function toggleViewCreateTeam () {
-  return { type: TOGGLE_VIEW }
+export function toggleViewCreateTeams () {
+  return { type: TOGGLE_VIEW_CREATE_TEAMS }
 }
 
 export function setTableColumns (columns) {

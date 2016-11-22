@@ -3,23 +3,57 @@
 require('./styles.scss')
 
 import React, { Component } from 'react'
-import RaisedButton from 'material-ui/RaisedButton'
+import { connect } from 'react-redux'
 
 // Containers
-import Teams from './Teams'
+import TeamsHomePage from './Teams'
 
-// Test
-import CreateTeam from './Teams/CreateTeam'
+// Components
+import Navigation from './Navigation'
 
-export default class App extends Component {
+// Actions
+import { toggleViewCreateTeams } from './Teams/ducks'
+
+export class App extends Component {
   render () {
+    const menuActions = [
+      {
+        text: 'Create Team',
+        handler: () => {
+          this.props.toggleViewCreateTeams()
+        }
+      }
+    ]
+
     return (
       <div className='App'>
-        <h2>HEADER HERE!!!</h2>
-        <RaisedButton label='Create Team' onClick={() => console.log('Hello World!')} primary />
-        <Teams />
-        <CreateTeam />
+        <Navigation title='LoL Teams' actions={menuActions} />
+        <TeamsHomePage />
       </div>
     )
   }
 }
+
+App.propTypes = {
+  Teams: React.PropTypes.object.isRequired,
+  toggleViewCreateTeams: React.PropTypes.func
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return state
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    toggleViewCreateTeams: () => {
+      dispatch(toggleViewCreateTeams())
+    }
+  }
+}
+
+const connectedApp = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
+
+export default connectedApp
