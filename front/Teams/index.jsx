@@ -9,7 +9,8 @@ import CustomTable from '../shared_components/CustomTable'
 import CreateTeam from './CreateTeam'
 
 // Actions
-import { setTableColumns, setTeams, deleteTeams, deleteTableColumns, toggleViewCreateTeams } from './ducks'
+import { setTableColumns, setTeams, deleteTeams, deleteTableColumns } from './ducks/homePage'
+import { toggleView } from './ducks/createTeam'
 
 export class TeamsHomePage extends Component {
   componentWillMount () {
@@ -100,15 +101,17 @@ TeamsHomePage.propTypes = {
   // Hides annoying warnings about functions
   setTeams: React.PropTypes.func,
   setTableColumns: React.PropTypes.func,
-  clearState: React.PropTypes.func
+  clearState: React.PropTypes.func,
+  toggleViewCreateTeams: React.PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { Teams } = state
+  const { Home, Create } = state.Teams
+
   return {
-    tableColumns: Teams.get('tableColumns'),
-    teams: Teams.get('teams'),
-    isCreateTeamActive: Teams.get('isCreateTeamActive')
+    tableColumns: Home.get('tableColumns'),
+    teams: Home.get('teams'),
+    isCreateTeamActive: Create.get('isActive')
   }
 }
 
@@ -125,7 +128,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(deleteTeams())
     },
     toggleViewCreateTeams: () => {
-      dispatch(toggleViewCreateTeams())
+      dispatch(toggleView())
     }
   }
 }

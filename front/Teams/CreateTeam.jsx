@@ -3,11 +3,11 @@
 import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import constants from '../../../constants'
+import constants from '../../constants'
 import 'whatwg-fetch'
 
 // Components
-import CustomMultiSelect from '../../shared_components/CustomMultiSelect'
+import CustomMultiSelect from '../shared_components/CustomMultiSelect'
 
 export default class CreateTeam extends Component {
   constructor (props) {

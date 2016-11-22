@@ -22,7 +22,7 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 8. Limit DB results to only necessary attributes
 9. ~~Seed file for testing DB~~
 10. Click on team to view its info
-11. App navigation (FIX TEAMS)
+11. ~~App navigation (FIX TEAMS)~~
 12. Unit test routes
 
 

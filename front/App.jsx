@@ -12,7 +12,7 @@ import TeamsHomePage from './Teams'
 import Navigation from './Navigation'
 
 // Actions
-import { toggleViewCreateTeams } from './Teams/ducks'
+import { toggleView } from './Teams/ducks/createTeam'
 
 export class App extends Component {
   render () {
@@ -46,7 +46,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     toggleViewCreateTeams: () => {
-      dispatch(toggleViewCreateTeams())
+      dispatch(toggleView())
     }
   }
 }
