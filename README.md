@@ -21,9 +21,10 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 7. ~~Basic team info page~~
 8. Limit DB results to only necessary attributes
 9. ~~Seed file for testing DB~~
-10. Click on team to view its info
+10. ~~Click on team to view its info~~
 11. ~~App navigation (FIX TEAMS)~~
 12. Unit test routes
+13. Toggling views returns component state to default unless otherwise needed
 
 
 ## Stuff to Refactor:

@@ -7,35 +7,32 @@ import { Table, TableBody, TableHeader } from 'material-ui/Table'
 import CustomRow from './CustomRow'
 import CustomTableHeader from './CustomTableHeader'
 
-const CustomTable = ({ givenColumnNames, rowContents }) => {
+const CustomTable = ({ givenColumnNames, rowContents, handleRowClick }) => {
   let rows
   // Create table rows
   if (rowContents !== null) {
-    rows = rowContents.map((rowContentObject, index) => {
-      return <CustomRow key={`table-row${index}`} dataObject={rowContentObject} rowNum={index} isHeaderColumn={false}/>
+    rows = rowContents.map((rowContent, index) => {
+      return <CustomRow key={`table-row${index}`} data={rowContent} rowNum={index} isHeaderColumn={false} handleRowClick={handleRowClick}/>
     })
   }
 
   return (
-    <div>
-      <Table className='CustomTable'>
-        <TableHeader>
-          {/* Header Columns */}
-          <CustomTableHeader key={'table-row-1'} columnNames={givenColumnNames} rowNum={-1} />
-        </TableHeader>
-        <TableBody>
-          {rows}
-        </TableBody>
-      </Table>
-    </div>
-
+    <Table className='CustomTable'>
+      <TableHeader>
+        {/* Header Columns */}
+        <CustomTableHeader key={'table-row-1'} columnNames={givenColumnNames} rowNum={-1} />
+      </TableHeader>
+      <TableBody>
+        {rows}
+      </TableBody>
+    </Table>
   )
 }
 
 CustomTable.propTypes = {
   givenColumnNames: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   rowContents: React.PropTypes.arrayOf(React.PropTypes.object),
-  onRowClick: React.PropTypes.func
+  handleRowClick: React.PropTypes.func
 }
 
 export default CustomTable

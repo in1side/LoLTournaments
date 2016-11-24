@@ -7,9 +7,11 @@ import { connect } from 'react-redux'
 // Components
 import CustomTable from '../shared_components/CustomTable'
 import CreateTeam from './CreateTeam'
+import TeamInfo from './TeamInfo'
 
-// Actions
-import { setTableColumns, setTeams, deleteTeams, deleteTableColumns } from './ducks/homePage'
+// Action Creators
+import { toggleViewHomePage, setTableColumns, setTeams, deleteTeams, deleteTableColumns } from './ducks/homePage'
+import { toggleViewTeamInfo, setTeam } from './ducks/teamInfo'
 
 export class TeamsHomePage extends Component {
   componentWillMount () {
@@ -63,12 +65,20 @@ export class TeamsHomePage extends Component {
 
   // TODO: Link team name and leader to respective info page
   render () {
-    const { teams, tableColumns, isCreateTeamActive } = this.props
+    const { teams, tableColumns, isCreateTeamActive, isTeamInfoActive, selectedTeam } = this.props
 
     if (isCreateTeamActive) {
       return (
         <div className='TeamsHomePage'>
           <CreateTeam />
+        </div>
+      )
+    }
+
+    if (isTeamInfoActive) {
+      return (
+        <div className='TeamsHomePage'>
+          <TeamInfo team={selectedTeam} />
         </div>
       )
     }
@@ -86,6 +96,9 @@ export class TeamsHomePage extends Component {
           <CustomTable
             givenColumnNames={tableColumns}
             rowContents={teams}
+            handleRowClick={(team) => {
+              this.props.toggleViewTeamInfo(team)
+            }}
           />
         </div>
       )
@@ -97,19 +110,24 @@ TeamsHomePage.propTypes = {
   tableColumns: React.PropTypes.array,
   teams: React.PropTypes.array.isRequired,
   isCreateTeamActive: React.PropTypes.bool,
+  isTeamInfoActive: React.PropTypes.bool,
+  selectedTeam: React.PropTypes.object,
   // Hides annoying warnings about functions
   setTeams: React.PropTypes.func,
   setTableColumns: React.PropTypes.func,
-  clearState: React.PropTypes.func
+  clearState: React.PropTypes.func,
+  toggleViewTeamInfo: React.PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { Home, Create } = state.Teams
+  const { Home, Create, Info } = state.Teams
 
   return {
     tableColumns: Home.get('tableColumns'),
     teams: Home.get('teams'),
-    isCreateTeamActive: Create.get('isActive')
+    isCreateTeamActive: Create.get('isActive'),
+    isTeamInfoActive: Info.get('isActive'),
+    selectedTeam: Info.get('team')
   }
 }
 
@@ -124,6 +142,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     clearState: () => {
       dispatch(deleteTableColumns())
       dispatch(deleteTeams())
+    },
+    toggleViewTeamInfo: (team) => {
+      dispatch(setTeam(team))
+      dispatch(toggleViewHomePage())
+      dispatch(toggleViewTeamInfo())
     }
   }
 }
