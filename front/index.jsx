@@ -13,9 +13,9 @@ import rootReducer from './rootReducer'
 import App from './App'
 
 // Action Creators
-import { setCreateTeamToDefaultState } from './Teams/ducks/createTeam'
-import { setHomePageToDefaultState } from './Teams/ducks/homePage'
-import { setTeamInfoToDefaultState } from './Teams/ducks/teamInfo'
+import { setCreateTeamToDefaultState } from './Teams/ducks/create'
+import { setHomePageToDefaultState } from './Teams/ducks/home'
+import { setTeamInfoToDefaultState } from './Teams/ducks/info'
 
 // Middleware
 const clearViewStatesOnViewActivation = store => next => action => {
@@ -25,15 +25,15 @@ const clearViewStatesOnViewActivation = store => next => action => {
 
   if (actionName === 'TOGGLE_VIEW') {
     switch (actionSrc) {
-      case 'createTeam':
+      case 'create':
         store.dispatch(setHomePageToDefaultState())
         store.dispatch(setTeamInfoToDefaultState())
         break
-      case 'homePage':
+      case 'home':
         store.dispatch(setCreateTeamToDefaultState())
         store.dispatch(setTeamInfoToDefaultState())
         break
-      case 'teamInfo':
+      case 'info':
         store.dispatch(setCreateTeamToDefaultState())
         store.dispatch(setHomePageToDefaultState())
         break

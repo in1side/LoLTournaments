@@ -1,10 +1,10 @@
 'use strict'
 
 // Actions
-const DEFAULT_STATE = 'app/Teams/teamInfo/DEFAULT_STATE'
-const TOGGLE_VIEW = 'app/Teams/teamInfo/TOGGLE_VIEW'
-const SET_TEAM = 'app/Teams/teamInfo/SET_TEAM'
-const DEL_TEAM = 'app/Teams/teamInfo/DEL_TEAM'
+const DEFAULT_STATE = 'app/Teams/info/DEFAULT_STATE'
+const TOGGLE_VIEW = 'app/Teams/info/TOGGLE_VIEW'
+const SET_TEAM = 'app/Teams/info/SET_TEAM'
+const DEL_TEAM = 'app/Teams/info/DEL_TEAM'
 
 // Reducer
 const teamInfoInitialState = Immutable.Map({

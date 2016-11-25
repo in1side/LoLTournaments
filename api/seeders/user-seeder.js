@@ -3,15 +3,15 @@
 module.exports = {
   up: function (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('users', [{
-      username: 'user1',
-      summonerName: 'summ1',
-      mainRoles: ['ADC'],
+      username: 'ssorakaflockaflame',
+      summonerName: 'SorakaFlockaFame',
+      mainRoles: ['SUPP'],
       createdAt: (new Date()).toUTCString(),
       updatedAt: (new Date()).toUTCString()
     }, {
-      username: 'user2',
-      summonerName: 'summ2',
-      mainRoles: ['SUPP'],
+      username: 'tigur01',
+      summonerName: 'tigur01',
+      mainRoles: ['SUPP', 'ADC'],
       createdAt: (new Date()).toUTCString(),
       updatedAt: (new Date()).toUTCString()
     }], {})

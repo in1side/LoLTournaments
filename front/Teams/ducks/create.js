@@ -1,14 +1,14 @@
 'use strict'
 
 // Actions
-const DEFAULT_STATE = 'app/Teams/createTeam/DEFAULT_STATE'
-const TOGGLE_VIEW = 'app/Teams/createTeam/TOGGLE_VIEW'
-const SET_NAME = 'app/Teams/createTeam/SET_NAME'
-const DEL_NAME = 'app/Teams/createTeam/DEL_NAME'
-const TOGGLE_DESIRED_ROLE = 'app/Teams/createTeam/TOGGLE_DESIRED_ROLE'
-const RESET_DESIRED_ROLES = 'app/Teams/createTeam/RESET_DESIRED_ROLES'
-const SET_ERR_MESSAGE = 'app/Teams/createTeam/SET_ERR_MESSAGE'
-const DEL_ERR_MESSAGE = 'app/Teams/createTeam/DEL_ERR_MESSAGE'
+const DEFAULT_STATE = 'app/Teams/create/DEFAULT_STATE'
+const TOGGLE_VIEW = 'app/Teams/create/TOGGLE_VIEW'
+const SET_NAME = 'app/Teams/create/SET_NAME'
+const DEL_NAME = 'app/Teams/create/DEL_NAME'
+const TOGGLE_DESIRED_ROLE = 'app/Teams/create/TOGGLE_DESIRED_ROLE'
+const RESET_DESIRED_ROLES = 'app/Teams/create/RESET_DESIRED_ROLES'
+const SET_ERR_MESSAGE = 'app/Teams/create/SET_ERR_MESSAGE'
+const DEL_ERR_MESSAGE = 'app/Teams/create/DEL_ERR_MESSAGE'
 
 // Reducers
 const createTeamInitialState = Immutable.Map({

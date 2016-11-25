@@ -1,13 +1,13 @@
 'use strict'
 
 // Actions
-const DEFAULT_STATE = 'app/Teams/homePage/DEFAULT_STATE'
-const TOGGLE_VIEW = 'app/Teams/homePage/TOGGLE_VIEW'
-const SET_TABLE_COLS = 'app/Teams/homePage/SET_TABLE_COLS'
-const SET_TEAMS = 'app/Teams/homePage/SET_TEAMS'
-const APPEND_TO_TEAMS = 'app/Teams/homePage/APPEND_TO_TEAMS'
-const DEL_TABLE_COLS = 'app/Teams/homePage/DEL_TABLE_COLS'
-const DEL_TEAMS = 'app/Teams/homePage/DEL_TEAMS'
+const DEFAULT_STATE = 'app/Teams/home/DEFAULT_STATE'
+const TOGGLE_VIEW = 'app/Teams/home/TOGGLE_VIEW'
+const SET_TABLE_COLS = 'app/Teams/home/SET_TABLE_COLS'
+const SET_TEAMS = 'app/Teams/home/SET_TEAMS'
+const APPEND_TO_TEAMS = 'app/Teams/home/APPEND_TO_TEAMS'
+const DEL_TABLE_COLS = 'app/Teams/home/DEL_TABLE_COLS'
+const DEL_TEAMS = 'app/Teams/home/DEL_TEAMS'
 
 // Reducer
 const homePageIntialState = Immutable.Map({

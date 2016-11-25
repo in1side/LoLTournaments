@@ -10,8 +10,8 @@ import { connect } from 'react-redux'
 import CustomMultiSelect from '../shared_components/CustomMultiSelect'
 
 // Action Creators
-import { setName, toggleDesiredRole, setErrorMessage, toggleView, resetDesiredRoles, deleteErrorMessage, deleteName } from './ducks/createTeam'
-import { appendToTeam } from './ducks/homePage'
+import { setName, toggleDesiredRole, setErrorMessage, toggleView, resetDesiredRoles, deleteErrorMessage, deleteName } from './ducks/create'
+import { toggleViewHomePage, appendToTeam } from './ducks/home'
 
 export class CreateTeam extends Component {
   createTeam = () => {
@@ -37,9 +37,9 @@ export class CreateTeam extends Component {
       return response.json()
     })
     .then((result) => {
-      const { appendToTeam, toggleViewCreateTeam, resetForm } = this.props
+      const { appendToTeam, toggleOffViewCreateTeamAndActivateHome, resetForm } = this.props
       appendToTeam(result)
-      toggleViewCreateTeam()
+      toggleOffViewCreateTeamAndActivateHome()
       resetForm()
     })
     .catch((error) => {
@@ -59,7 +59,7 @@ export class CreateTeam extends Component {
   }
 
   render () {
-    const { desiredRoles, errorMessage, toggleDesiredRole, toggleViewCreateTeam } = this.props
+    const { desiredRoles, errorMessage, toggleDesiredRole, toggleOffViewCreateTeamAndActivateHome } = this.props
     const desiredRolesButtonConfig = this.generateMultiSelectButtonConfigs(desiredRoles, toggleDesiredRole)
 
     return (
@@ -76,7 +76,7 @@ export class CreateTeam extends Component {
           buttonConfigs={desiredRolesButtonConfig}
         />
         <RaisedButton primary label='Create Team' onClick={this.createTeam} />
-        <RaisedButton secondary label='Cancel' onClick={toggleViewCreateTeam} />
+        <RaisedButton secondary label='Cancel' onClick={toggleOffViewCreateTeamAndActivateHome} />
       </div>
     )
   }
@@ -89,7 +89,7 @@ CreateTeam.propTypes = {
   setName: React.PropTypes.func,
   toggleDesiredRole: React.PropTypes.func,
   setErrorMessage: React.PropTypes.func,
-  toggleViewCreateTeam: React.PropTypes.func,
+  toggleOffViewCreateTeamAndActivateHome: React.PropTypes.func,
   appendToTeam: React.PropTypes.func,
   resetForm: React.PropTypes.func
 }
@@ -115,8 +115,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setErrorMessage: (message) => {
       dispatch(setErrorMessage(message))
     },
-    toggleViewCreateTeam: () => {
+    toggleOffViewCreateTeamAndActivateHome: () => {
       dispatch(toggleView())
+      dispatch(toggleViewHomePage())
     },
     appendToTeam: (team) => {
       dispatch(appendToTeam(team))

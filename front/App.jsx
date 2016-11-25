@@ -12,7 +12,7 @@ import TeamsHomePage from './Teams'
 import Navigation from './Navigation'
 
 // Actions
-import { toggleView } from './Teams/ducks/createTeam'
+import { toggleView } from './Teams/ducks/create'
 
 export class App extends Component {
   render () {

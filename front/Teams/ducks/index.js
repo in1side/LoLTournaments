@@ -3,9 +3,9 @@
 import { combineReducers } from 'redux'
 
 // Reducers
-import HomePageReducer from './homePage'
-import CreateTeamReducer from './createTeam'
-import TeamInfoReducer from './teamInfo'
+import HomePageReducer from './home'
+import CreateTeamReducer from './create'
+import TeamInfoReducer from './info'
 
 const TeamsRootReducer = combineReducers({
   Home: HomePageReducer,

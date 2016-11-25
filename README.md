@@ -24,7 +24,7 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 10. ~~Click on team to view its info~~
 11. ~~App navigation (FIX TEAMS)~~
 12. Unit test routes
-13. Toggling views returns component state to default unless otherwise needed
+13. ~~Toggling views returns component state to default unless otherwise needed~~
 
 
 ## Stuff to Refactor:
