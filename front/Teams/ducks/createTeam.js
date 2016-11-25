@@ -1,13 +1,14 @@
 'use strict'
 
 // Actions
-const TOGGLE_VIEW = 'app/Teams/CreateTeam/TOGGLE_VIEW'
-const SET_NAME = 'app/Teams/CreateTeam/SET_NAME'
-const DEL_NAME = 'app/Teams/CreateTeam/DEL_NAME'
-const TOGGLE_DESIRED_ROLE = 'app/Teams/CreateTeam/TOGGLE_DESIRED_ROLE'
-const RESET_DESIRED_ROLES = 'app/Teams/CreateTeam/RESET_DESIRED_ROLES'
-const SET_ERR_MESSAGE = 'app/Teams/CreateTeam/SET_ERR_MESSAGE'
-const DEL_ERR_MESSAGE = 'app/Teams/CreateTeam/DEL_ERR_MESSAGE'
+const DEFAULT_STATE = 'app/Teams/createTeam/DEFAULT_STATE'
+const TOGGLE_VIEW = 'app/Teams/createTeam/TOGGLE_VIEW'
+const SET_NAME = 'app/Teams/createTeam/SET_NAME'
+const DEL_NAME = 'app/Teams/createTeam/DEL_NAME'
+const TOGGLE_DESIRED_ROLE = 'app/Teams/createTeam/TOGGLE_DESIRED_ROLE'
+const RESET_DESIRED_ROLES = 'app/Teams/createTeam/RESET_DESIRED_ROLES'
+const SET_ERR_MESSAGE = 'app/Teams/createTeam/SET_ERR_MESSAGE'
+const DEL_ERR_MESSAGE = 'app/Teams/createTeam/DEL_ERR_MESSAGE'
 
 // Reducers
 const createTeamInitialState = Immutable.Map({
@@ -25,9 +26,11 @@ const createTeamInitialState = Immutable.Map({
 })
 export default function CreateTeamReducer (state = createTeamInitialState, action) {
   switch (action.type) {
+    case DEFAULT_STATE:
+      return createTeamInitialState
     case TOGGLE_VIEW:
       const updatedIsActive = !state.get('isActive')
-      return state.set('isActive', updatedIsActive)
+      return updatedIsActive ? state.set('isActive', updatedIsActive) : createTeamInitialState
     case SET_NAME:
       return state.set('name', action.name)
     case DEL_NAME:
@@ -56,6 +59,10 @@ export default function CreateTeamReducer (state = createTeamInitialState, actio
 }
 
 // Action Creators
+export function setCreateTeamToDefaultState () {
+  return { type: DEFAULT_STATE }
+}
+
 export function toggleView () {
   return { type: TOGGLE_VIEW }
 }

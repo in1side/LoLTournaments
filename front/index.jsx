@@ -12,17 +12,37 @@ import rootReducer from './rootReducer'
 
 import App from './App'
 
+// Action Creators
+import { setCreateTeamToDefaultState } from './Teams/ducks/createTeam'
+import { setHomePageToDefaultState } from './Teams/ducks/homePage'
+import { setTeamInfoToDefaultState } from './Teams/ducks/teamInfo'
+
 // Middleware
-const log = store => next => action => {
-  // Check if toggle view action
-  // Get default of action source (a.k.a view's default state)
-  // Set to default
-  console.log('Action:', action)
-  console.log('Store:', store)
+const clearViewStatesOnViewActivation = store => next => action => {
+  const actionPaths = action.type.split('/')
+  const actionName = actionPaths[actionPaths.length - 1]
+  const actionSrc = actionPaths[actionPaths.length - 2]
+
+  if (actionName === 'TOGGLE_VIEW') {
+    switch (actionSrc) {
+      case 'createTeam':
+        store.dispatch(setHomePageToDefaultState())
+        store.dispatch(setTeamInfoToDefaultState())
+        break
+      case 'homePage':
+        store.dispatch(setCreateTeamToDefaultState())
+        store.dispatch(setTeamInfoToDefaultState())
+        break
+      case 'teamInfo':
+        store.dispatch(setCreateTeamToDefaultState())
+        store.dispatch(setHomePageToDefaultState())
+        break
+    }
+  }
   return next(action)
 }
 
-const store = createStore(rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(log))
+const store = createStore(rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(clearViewStatesOnViewActivation))
 
 const init = () => {
   const app = document.createElement('div')

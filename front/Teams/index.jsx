@@ -16,6 +16,7 @@ import { toggleViewTeamInfo, setTeam } from './ducks/teamInfo'
 export class TeamsHomePage extends Component {
   componentWillMount () {
     this.getAllTeams()
+    this.props.toggleViewHomePage()
   }
 
   componentWillUnmount () {
@@ -113,6 +114,7 @@ TeamsHomePage.propTypes = {
   isTeamInfoActive: React.PropTypes.bool,
   selectedTeam: React.PropTypes.object,
   // Hides annoying warnings about functions
+  toggleViewHomePage: React.PropTypes.func,
   setTeams: React.PropTypes.func,
   setTableColumns: React.PropTypes.func,
   clearState: React.PropTypes.func,
@@ -133,6 +135,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    toggleViewHomePage: () => {
+      dispatch(toggleViewHomePage())
+    },
     setTableColumns: (columns) => {
       dispatch(setTableColumns(columns))
     },
@@ -145,7 +150,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     toggleViewTeamInfo: (team) => {
       dispatch(setTeam(team))
-      dispatch(toggleViewHomePage())
       dispatch(toggleViewTeamInfo())
     }
   }

@@ -1,25 +1,28 @@
 'use strict'
 
 // Actions
-const TOGGLE_VIEW = 'app/Teams/index/TOGGLE_VIEW'
-const SET_TABLE_COLS = 'app/Teams/index/SET_TABLE_COLS'
-const SET_TEAMS = 'app/Teams/index/SET_TEAMS'
-const APPEND_TO_TEAMS = 'app/Teams/index/APPEND_TO_TEAMS'
-const DEL_TABLE_COLS = 'app/Teams/index/DEL_TABLE_COLS'
-const DEL_TEAMS = 'app/Teams/index/DEL_TEAMS'
+const DEFAULT_STATE = 'app/Teams/homePage/DEFAULT_STATE'
+const TOGGLE_VIEW = 'app/Teams/homePage/TOGGLE_VIEW'
+const SET_TABLE_COLS = 'app/Teams/homePage/SET_TABLE_COLS'
+const SET_TEAMS = 'app/Teams/homePage/SET_TEAMS'
+const APPEND_TO_TEAMS = 'app/Teams/homePage/APPEND_TO_TEAMS'
+const DEL_TABLE_COLS = 'app/Teams/homePage/DEL_TABLE_COLS'
+const DEL_TEAMS = 'app/Teams/homePage/DEL_TEAMS'
 
 // Reducer
 const homePageIntialState = Immutable.Map({
-  isActive: true,
+  isActive: false,
   tableColumns: [],
   teams: []
 })
 
 export default function HomePageReducer (state = homePageIntialState, action = {}) {
   switch (action.type) {
+    case DEFAULT_STATE:
+      return homePageIntialState
     case TOGGLE_VIEW:
       const updatedIsActive = !state.get('isActive')
-      return state.set('isActive', updatedIsActive)
+      return updatedIsActive ? state.set('isActive', updatedIsActive) : homePageIntialState
     case SET_TABLE_COLS:
       return state.set('tableColumns', action.columns)
     case SET_TEAMS:
@@ -37,6 +40,10 @@ export default function HomePageReducer (state = homePageIntialState, action = {
 }
 
 // Action Creators
+export function setHomePageToDefaultState () {
+  return { type: DEFAULT_STATE }
+}
+
 export function toggleViewHomePage () {
   return { type: TOGGLE_VIEW }
 }
