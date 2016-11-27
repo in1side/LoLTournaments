@@ -1,7 +1,6 @@
 'use strict'
 
-console.log('env: ', process.env.NODE_ENV)
-console.log('Setting up Test-LoLTeams DB')
-
 const models = require('../models')
-models.sequelize.sync({ force: true })
+
+global.db = models
+db.sequelize.options.logging = false // Turn off logging
