@@ -1,5 +1,5 @@
 # LoLTeams
-League of Legends web app that allows players to create, manage and coordinate teams.
+Simple League of Legends web app that allows players to create and manage teams.
 
 ## Instructions
 1. Host a PostgreSQL server on port `5432`.
@@ -13,23 +13,27 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 
 ## TODO:
 1. ~~Basic front-end that connects to API~~
-2. User login/create account
-3. Store and get user id on client-side
+2. ~~User login/create account~~
+3. ~~Store and get user id on client-side~~ Authorize Auth0 profile to be sent back
 4. Handle fetch error and success (includes server response formats)
 5. Change DB to catch errors and not crash
 6. ~~Show list of teams~~
 7. ~~Basic team info page~~
-8. Limit DB results to only necessary attributes
-9. ~~Seed file for testing DB~~
-10. ~~Click on team to view its info~~
-11. ~~App navigation (FIX TEAMS)~~
-12. Unit test routes
-13. ~~Toggling views returns component state to default unless otherwise needed~~
+8. ~~Seed file for testing DB~~
+9. ~~Click on team to view its info~~
+10. ~~App navigation (FIX TEAMS)~~
+11. Unit test routes
+12. ~~Toggling views returns component state to default unless otherwise needed~~
 
 
 ## Stuff to Refactor:
 1. ~~Routes since there is some repeated code~~
 2. Make objects contain one type only!!!
+3. Limit DB results to only necessary attributes
+
 
 ## Future
 1. Translate routes to graphQL
+2. Create balanced teams given list of participants and their ranks
+3. Input availability to practice
+4. Schedule of all team member availability

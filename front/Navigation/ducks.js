@@ -1,7 +1,7 @@
 'use strict'
 
 // Actions
-const TOGGLE_NAV = 'app/TOGGLE_NAV'
+const TOGGLE_NAV = 'app/Navigation/index/TOGGLE_NAV'
 
 // Reducer
 export default function NavigationReducer (state = false, action) {

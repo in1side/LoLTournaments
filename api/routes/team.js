@@ -2,6 +2,7 @@
 // NOTE: Edited by Alexei Darmin
 const util = require('../util')
 const query = require('../queries/team')
+const _ = require('lodash')
 
 module.exports = (app) => {
   // NOTE: Prime example of nice code
@@ -34,6 +35,81 @@ module.exports = (app) => {
       })
     })
   })
+
+  // Return a number value depending on given ranked tier
+  function getTierValue (tier) {
+    switch (tier) {
+      case 'BRONZE':
+        return 0
+      case 'SILVER':
+        return 5
+      case 'GOLD':
+        return 10
+      case 'PLATINUM':
+        return 15
+      case 'DIAMOND':
+        return 20
+      case 'MASTER':
+        return 25
+      case 'CHALLENGER':
+        return 30
+    }
+  }
+
+  // Return a number value depending on given tier division
+  function getDivisionValue (division) {
+    switch (division) {
+      case 'I':
+        return 4
+      case 'II':
+        return 3
+      case 'III':
+        return 2
+      case 'IV':
+        return 1
+      case 'V':
+        return 0
+    }
+  }
+
+  // // Given array of participant objects, append converted ranked values to each participant
+  // function setParticipantsRankedValues (participants) {
+  //   return participants.map((participant) => {
+  //     participant.value = getTierValue(participant.tier) + getDivisionValue(participant.division)
+  //     return participant
+  //   })
+  // }
+  //
+  // function averageParticapantValue (participants) {
+  //   let sum = 0
+  //   participants.forEach((participant) => {
+  //     sum += participant.value
+  //   })
+  //
+  //   return sum / participants.length
+  // }
+
+  // participants: [{ summonerName, role, tier, division }, ...]
+  // TODO: Write a balanced team generator function
+  // app.post('/create/balancedTeams', (req, res, err) => {
+  //   const { participants } = req.body
+  //   const ADCs = []
+  //   const SUPPs = []
+  //   const TOPs = []
+  //   const MIDs = []
+  //   const JUNGs = []
+  //
+  //
+  //   const updatedParticipants = setParticipantsRankedValues(participants)
+  //   const averageValue = averageParticapantValue(updatedParticipants)
+  //
+  //   // Sort participants by value
+  //   const participantsInAscendingValue = _.sortBy(updatedParticipants, (participant) => participant.value)
+  //   // Sort by role
+  //   // Find least populated roles, setting it as num teams to make
+  //   // Make every possible set of teams
+  //   // Pick closest set to average
+  // })
 
   app.delete('/delete/team', (req, res, err) => {
     const { teamID, leaderID } = req.body
