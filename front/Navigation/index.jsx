@@ -8,6 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import { connect } from 'react-redux'
 import constants from '../../constants'
 import Auth0Lock from 'auth0-lock'
+import 'whatwg-fetch'
 
 // Action Creators
 import { toggleNavigation } from './ducks'
@@ -23,14 +24,34 @@ export class Navigation extends Component {
       },
       additionalSignUpFields: [{
         name: 'Username',
-        placeholder: 'your username'
+        placeholder: 'Username'
+      }, {
+        name: 'summonerName',
+        placeholder: 'Summoner Name',
+        validate: (summonerName) => {
+          return {
+            valid: summonerName.length <= constants.SUMMONER_MAX_LEN,
+            hint: `Summoner name must be ${constants.SUMMONER_MAX_LEN} characters or less`
+          }
+        }
       }]
     })
+
     this.lock.on('authenticated', (authResult) => {
-      console.log(authResult);
       this.props.setAsLoggedIn()
+      localStorage.setItem('access_token', authResult.accessToken)
       localStorage.setItem('id_token', authResult.idToken)
-      this.lock.getUserInfo(authResult.idToken, (profile) => {
+
+      fetch('https://bsoropia.auth0.com/userinfo', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+        }
+      })
+      .then((res) => res.json())
+      .then((profile) => {
+        console.log(profile)
         localStorage.setItem('profile', profile)
       })
     })

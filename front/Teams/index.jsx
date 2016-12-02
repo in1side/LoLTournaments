@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import CustomTable from '../shared_components/CustomTable'
 import CreateTeam from './Create'
 import TeamInfo from './Info'
+import EditTeam from './Edit'
 
 // Action Creators
 import { toggleViewHomePage, setTableColumns, setTeams } from './ducks/home'
@@ -67,7 +68,7 @@ export class TeamsHomePage extends Component {
 
   // TODO: Link leader to respective info page
   render () {
-    const { teams, tableColumns, isCreateTeamActive, isTeamInfoActive, selectedTeam } = this.props
+    const { teams, tableColumns, isCreateTeamActive, isTeamInfoActive, isEditTeamActive, selectedTeam } = this.props
 
     if (isCreateTeamActive) {
       return (
@@ -84,6 +85,15 @@ export class TeamsHomePage extends Component {
         </div>
       )
     }
+
+    if (isEditTeamActive) {
+      return (
+        <div>
+          <EditTeam />
+        </div>
+      )
+    }
+
     if ((teams.length === 0) && (tableColumns.length === 0)) {
       return (
         <div className='TeamsHomePage'>
@@ -114,6 +124,7 @@ TeamsHomePage.propTypes = {
   teams: React.PropTypes.array.isRequired,
   isCreateTeamActive: React.PropTypes.bool,
   isTeamInfoActive: React.PropTypes.bool,
+  isEditTeamActive: React.PropTypes.bool,
   selectedTeam: React.PropTypes.object,
   // Hides annoying warnings about functions
   toggleViewHomePage: React.PropTypes.func,
@@ -123,7 +134,7 @@ TeamsHomePage.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { Home, Create, Info } = state.Teams
+  const { Home, Create, Info, Edit } = state.Teams
 
   return {
     isActive: Home.get('isActive'),
@@ -131,6 +142,7 @@ const mapStateToProps = (state, ownProps) => {
     teams: Home.get('teams'),
     isCreateTeamActive: Create.get('isActive'),
     isTeamInfoActive: Info.get('isActive'),
+    isEditTeamActive: Edit.get('isActive'),
     selectedTeam: Info.get('team')
   }
 }

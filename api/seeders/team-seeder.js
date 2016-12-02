@@ -16,6 +16,13 @@ module.exports = {
       leaderID: 2,
       createdAt: (new Date()).toUTCString(),
       updatedAt: (new Date()).toUTCString()
+    }, {
+      name: 'team3',
+      memberIDs: [1, 2],
+      desiredRoles: ['SUPP', 'ADC'],
+      leaderID: 1,
+      createdAt: (new Date()).toUTCString(),
+      updatedAt: (new Date()).toUTCString()
     }], {})
   },
 

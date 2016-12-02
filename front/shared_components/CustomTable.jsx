@@ -11,8 +11,8 @@ const CustomTable = ({ givenColumnNames, rowContents, handleRowClick }) => {
   let rows
   // Create table rows
   if (rowContents !== null) {
-    rows = rowContents.map((rowContent, index) => {
-      return <CustomRow key={`table-row${index}`} data={rowContent} rowNum={index} isHeaderColumn={false} handleRowClick={handleRowClick}/>
+    rows = rowContents.map((content, index) => {
+      return <CustomRow key={`table-row${index}`} data={content} rowNum={index} isHeaderColumn={false} handleRowClick={handleRowClick}/>
     })
   }
 

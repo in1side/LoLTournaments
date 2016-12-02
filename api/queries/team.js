@@ -4,6 +4,9 @@ const util = require('../util')
 const db = require('../models')
 
 module.exports = {
+  findAllTeamsWithLeaderIDAndSelectAttributes: (leaderID, attributes) => {
+    return db.Team.findAll({ attributes, where: { leaderID }, raw: true })
+  },
   findTeamByID: (teamID) => {
     return db.Team.findById(teamID, { raw: true })
   },

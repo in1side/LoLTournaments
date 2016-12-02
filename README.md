@@ -14,7 +14,7 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 ## TODO:
 1. ~~Basic front-end that connects to API~~
 2. ~~User login/create account~~
-3. ~~Store and get user id on client-side~~ Authorize Auth0 profile to be sent back
+3. ~~Store and get user id on client-side -> Authorize Auth0 profile to be sent back~~
 4. Handle fetch error and success (includes server response formats)
 5. Change DB to catch errors and not crash
 6. ~~Show list of teams~~
@@ -24,6 +24,9 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 10. ~~App navigation (FIX TEAMS)~~
 11. Unit test routes
 12. ~~Toggling views returns component state to default unless otherwise needed~~
+13. Create teams only if creator's user account exists
+14. Edit team members
+15. Team invite accept/decline mechanism
 
 
 ## Stuff to Refactor:

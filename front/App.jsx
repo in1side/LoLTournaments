@@ -12,7 +12,8 @@ import TeamsHomePage from './Teams'
 import Navigation from './Navigation'
 
 // Actions
-import { toggleView } from './Teams/ducks/create'
+import { toggleView as toggleCreateTeam } from './Teams/ducks/create'
+import { toggleView as toggleEditTeam } from './Teams/ducks/edit'
 
 export class App extends Component {
   render () {
@@ -20,7 +21,14 @@ export class App extends Component {
       {
         text: 'Create Team',
         handler: () => {
-          this.props.toggleViewCreateTeams()
+          this.props.toggleViewCreateTeam()
+        }
+      },
+      {
+        text: 'Edit My Teams',
+        handler: () => {
+          // TODO: toggle view here
+          this.props.toggleViewEditTeam()
         }
       }
     ]
@@ -36,7 +44,8 @@ export class App extends Component {
 
 App.propTypes = {
   Teams: React.PropTypes.object.isRequired,
-  toggleViewCreateTeams: React.PropTypes.func
+  toggleViewCreateTeam: React.PropTypes.func,
+  toggleViewEditTeam: React.PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -45,8 +54,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    toggleViewCreateTeams: () => {
-      dispatch(toggleView())
+    toggleViewCreateTeam: () => {
+      dispatch(toggleCreateTeam())
+    },
+    toggleViewEditTeam: () => {
+      dispatch(toggleEditTeam())
     }
   }
 }

@@ -16,8 +16,10 @@ import App from './App'
 import { setCreateTeamToDefaultState } from './Teams/ducks/create'
 import { setHomePageToDefaultState } from './Teams/ducks/home'
 import { setTeamInfoToDefaultState } from './Teams/ducks/info'
+import { setEditTeamToDefaultState } from './Teams/ducks/edit'
 
 // Middleware
+// NOTE: Always add new defaultstate setters and case when new views made
 const clearViewStatesOnViewActivation = store => next => action => {
   const actionPaths = action.type.split('/')
   const actionName = actionPaths[actionPaths.length - 1]
@@ -28,14 +30,22 @@ const clearViewStatesOnViewActivation = store => next => action => {
       case 'create':
         store.dispatch(setHomePageToDefaultState())
         store.dispatch(setTeamInfoToDefaultState())
+        store.dispatch(setEditTeamToDefaultState())
         break
       case 'home':
         store.dispatch(setCreateTeamToDefaultState())
         store.dispatch(setTeamInfoToDefaultState())
+        store.dispatch(setEditTeamToDefaultState())
         break
       case 'info':
         store.dispatch(setCreateTeamToDefaultState())
         store.dispatch(setHomePageToDefaultState())
+        store.dispatch(setEditTeamToDefaultState())
+        break
+      case 'edit':
+        store.dispatch(setCreateTeamToDefaultState())
+        store.dispatch(setHomePageToDefaultState())
+        store.dispatch(setTeamInfoToDefaultState())
         break
     }
   }

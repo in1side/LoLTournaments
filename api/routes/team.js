@@ -2,9 +2,23 @@
 // NOTE: Edited by Alexei Darmin
 const util = require('../util')
 const query = require('../queries/team')
-const _ = require('lodash')
+// const _ = require('lodash')
 
 module.exports = (app) => {
+  app.post('/search/teamByLeaderID', (req, res, err) => {
+    const { leaderID } = req.body
+
+    query.findAllTeamsWithLeaderIDAndSelectAttributes(leaderID, ['id', 'name', 'memberIDs', 'desiredRoles', 'leaderID'])
+    .then((teams) => {
+      if (teams === undefined) return res.send({ teams: [], message: 'Couldn\'t find any teams with given leader.' })
+
+      Promise.all(teams.map((team) => query.getMembersUsernamesAndSaveToTeam(team)))
+      .then((allTeams) => {
+        res.send({ teams: allTeams })
+      })
+    })
+  })
+
   // NOTE: Prime example of nice code
   app.get('/getAllTeams', (req, res, err) => {
     query.findAllTeamsAndSelectAttributes(['id', 'name', 'memberIDs', 'desiredRoles', 'leaderID'], '"updatedAt" DESC')
@@ -36,41 +50,41 @@ module.exports = (app) => {
     })
   })
 
-  // Return a number value depending on given ranked tier
-  function getTierValue (tier) {
-    switch (tier) {
-      case 'BRONZE':
-        return 0
-      case 'SILVER':
-        return 5
-      case 'GOLD':
-        return 10
-      case 'PLATINUM':
-        return 15
-      case 'DIAMOND':
-        return 20
-      case 'MASTER':
-        return 25
-      case 'CHALLENGER':
-        return 30
-    }
-  }
-
-  // Return a number value depending on given tier division
-  function getDivisionValue (division) {
-    switch (division) {
-      case 'I':
-        return 4
-      case 'II':
-        return 3
-      case 'III':
-        return 2
-      case 'IV':
-        return 1
-      case 'V':
-        return 0
-    }
-  }
+  // // Return a number value depending on given ranked tier
+  // function getTierValue (tier) {
+  //   switch (tier) {
+  //     case 'BRONZE':
+  //       return 0
+  //     case 'SILVER':
+  //       return 5
+  //     case 'GOLD':
+  //       return 10
+  //     case 'PLATINUM':
+  //       return 15
+  //     case 'DIAMOND':
+  //       return 20
+  //     case 'MASTER':
+  //       return 25
+  //     case 'CHALLENGER':
+  //       return 30
+  //   }
+  // }
+  //
+  // // Return a number value depending on given tier division
+  // function getDivisionValue (division) {
+  //   switch (division) {
+  //     case 'I':
+  //       return 4
+  //     case 'II':
+  //       return 3
+  //     case 'III':
+  //       return 2
+  //     case 'IV':
+  //       return 1
+  //     case 'V':
+  //       return 0
+  //   }
+  // }
 
   // // Given array of participant objects, append converted ranked values to each participant
   // function setParticipantsRankedValues (participants) {
