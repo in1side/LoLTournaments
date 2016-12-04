@@ -5,6 +5,7 @@ import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import 'whatwg-fetch'
 import { connect } from 'react-redux'
+import helpers from '../util/helpers'
 
 // Components
 import CustomMultiSelect from '../shared_components/CustomMultiSelect'
@@ -22,17 +23,15 @@ export class CreateTeam extends Component {
       if (desiredRoles[role]) selectedRoles.push(role)
     })
 
-    fetch('http://localhost:3000/create/team', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    helpers.hitAPI('http://localhost:3000/create/team',
+      'POST',
+      {},
+      JSON.stringify({
         teamName: name,
         desiredRoles: selectedRoles,
         leaderID: 1 // TODO: Get leader user id
       })
-    })
+    )
     .then((response) => {
       return response.json()
     })

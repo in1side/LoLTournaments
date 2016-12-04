@@ -42,16 +42,18 @@ export class Navigation extends Component {
       localStorage.setItem('access_token', authResult.accessToken)
       localStorage.setItem('id_token', authResult.idToken)
 
-      fetch('https://bsoropia.auth0.com/userinfo', {
-        method: 'GET',
+      fetch('https://bsoropia.auth0.com/tokeninfo', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('access_token')
-        }
+          'Authorization': 'Bearer ' + localStorage.getItem('id_token')
+        },
+        body: JSON.stringify({
+          id_token: localStorage.getItem('id_token')
+        })
       })
       .then((res) => res.json())
       .then((profile) => {
-        console.log(profile)
         localStorage.setItem('profile', profile)
       })
     })

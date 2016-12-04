@@ -5,6 +5,7 @@ import CustomTable from '../shared_components/CustomTable'
 import 'whatwg-fetch'
 import { connect } from 'react-redux'
 import CustomTabs from '../shared_components/CustomTabs'
+import helpers from '../util/helpers'
 
 // Action Creators
 import { setTeams, selectTeam } from './ducks/edit'
@@ -17,15 +18,13 @@ export class EditTeam extends Component {
   }
 
   getTeamsOwnedByUser = (userID) => {
-    fetch('http://localhost:3000/search/teamByLeaderID', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    helpers.hitAPI('http://localhost:3000/search/teamByLeaderID',
+      'POST',
+      {},
+      JSON.stringify({
         leaderID: userID
       })
-    })
+    )
     .then((res) => {
       return res.json()
     })

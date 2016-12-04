@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import 'whatwg-fetch'
 import { connect } from 'react-redux'
+import helpers from '../util/helpers'
 
 // Components
 import CustomTable from '../shared_components/CustomTable'
@@ -26,9 +27,7 @@ export class TeamsHomePage extends Component {
   }
 
   fetchTeams = () => {
-    fetch('http://localhost:3000/getAllTeams', {
-      method: 'GET'
-    })
+    helpers.hitAPI('http://localhost:3000/getAllTeams', 'GET')
     .then((response) => {
       return response.json()
     })
