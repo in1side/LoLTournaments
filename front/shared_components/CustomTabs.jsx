@@ -7,9 +7,9 @@ import CustomTable from './CustomTable'
 import { generateColumnNames } from '../util/helpers'
 
 // Contents: [{ title: string, desc: string, team: obj }, ...]
-const CustomTabs = ({ teams }) => {
-  const tabs = Object.keys(teams).map((team) => {
-    const { name, desc } = teams[team]
+const CustomTabs = ({ contents }) => {
+  const tabs = Object.keys(contents).map((content) => {
+    const { name, desc } = contents[content]
 
     return (
       <Tab key={`tab-${name}`} label={name}>
@@ -18,8 +18,8 @@ const CustomTabs = ({ teams }) => {
           <p>{desc}</p>
           <CustomTable
             // NOTE: This is a hack since CustomTable wants ARRAY OF OBJECTS
-            givenColumnNames={generateColumnNames([teams[team]])}
-            rowContents={[teams[team]]}
+            givenColumnNames={generateColumnNames([contents[content]])}
+            rowContents={[contents[content]]}
           />
         </div>
     </Tab>

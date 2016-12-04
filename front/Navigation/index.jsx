@@ -13,6 +13,7 @@ import 'whatwg-fetch'
 // Action Creators
 import { toggleNavigation } from './ducks'
 import { setAsLoggedIn, setAsLoggedOut } from '../Auth0/ducks'
+import { toggleViewHomePage } from '../Teams/ducks/home'
 
 export class Navigation extends Component {
   constructor (props) {
@@ -94,6 +95,7 @@ export class Navigation extends Component {
               localStorage.removeItem('id_token')
               localStorage.removeItem('access_token')
               localStorage.removeItem('profile')
+              this.props.toggleViewHomePage()
             }
           }}
         />
@@ -117,7 +119,8 @@ Navigation.propTypes = {
   isLoggedIn: React.PropTypes.bool,
   setAsLoggedIn: React.PropTypes.func,
   setAsLoggedOut: React.PropTypes.func,
-  onTitleTouchTap: React.PropTypes.func
+  onTitleTouchTap: React.PropTypes.func,
+  toggleViewHomePage: React.PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -137,6 +140,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     setAsLoggedOut: () => {
       dispatch(setAsLoggedOut())
+    },
+    toggleViewHomePage: () => {
+      dispatch(toggleViewHomePage())
     }
   }
 }

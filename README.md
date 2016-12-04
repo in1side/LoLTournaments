@@ -27,6 +27,7 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 13. Create teams only if creator's user account exists
 14. Edit team members
 15. Team invite accept/decline mechanism
+16. Format table contents for Home and Edit Teams
 
 
 ## Stuff to Refactor:
@@ -40,3 +41,4 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 2. Create balanced teams given list of participants and their ranks
 3. Input availability to practice
 4. Schedule of all team member availability
+5. Team descriptions

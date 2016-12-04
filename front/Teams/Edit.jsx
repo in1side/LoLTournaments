@@ -1,7 +1,6 @@
 'use strict'
 
 import React, { Component } from 'react'
-import CustomTable from '../shared_components/CustomTable'
 import 'whatwg-fetch'
 import { connect } from 'react-redux'
 import CustomTabs from '../shared_components/CustomTabs'
@@ -29,7 +28,12 @@ export class EditTeam extends Component {
       return res.json()
     })
     .then((result) => {
-      this.props.setTeams(result.teams)
+      const { teams } = result
+      // TODO: Save each team's name and members
+      const basicTeamDetails = teams.map((team) => {
+        return { name: team.name, desc: team.desc, members: team.members }
+      })
+      this.props.setTeams(basicTeamDetails)
     })
     .catch((err) => {
       console.log(err)
@@ -40,7 +44,7 @@ export class EditTeam extends Component {
     const { teams } = this.props
     return (
       <div className='EditTeam'>
-        <CustomTabs teams={teams} />
+        <CustomTabs contents={teams} />
       </div>
     )
   }
