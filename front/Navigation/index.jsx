@@ -69,6 +69,7 @@ export class Navigation extends Component {
       return <MenuItem
         key={`menu-item${index}`}
         primaryText={action.text}
+        disabled={!this.props.isLoggedIn} // Disable buttons if not logged in
         onTouchTap={() => {
           action.handler()
           toggleNavigation() // Always close nav on click
@@ -88,6 +89,8 @@ export class Navigation extends Component {
             } else {
               this.props.setAsLoggedOut()
               localStorage.removeItem('id_token')
+              localStorage.removeItem('access_token')
+              localStorage.removeItem('profile')
             }
           }}
         />
