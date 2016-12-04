@@ -14,6 +14,7 @@ import Navigation from './Navigation'
 // Actions
 import { toggleView as toggleCreateTeam } from './Teams/ducks/create'
 import { toggleView as toggleEditTeam } from './Teams/ducks/edit'
+import { toggleViewHomePage } from './Teams/ducks/home'
 
 export class App extends Component {
   render () {
@@ -35,7 +36,7 @@ export class App extends Component {
 
     return (
       <div className='App'>
-        <Navigation title='LoL Teams' actions={menuActions} />
+        <Navigation title='LoL Teams' onTitleTouchTap={this.props.toggleViewHomePage} actions={menuActions} />
         <TeamsHomePage />
       </div>
     )
@@ -45,7 +46,8 @@ export class App extends Component {
 App.propTypes = {
   Teams: React.PropTypes.object.isRequired,
   toggleViewCreateTeam: React.PropTypes.func,
-  toggleViewEditTeam: React.PropTypes.func
+  toggleViewEditTeam: React.PropTypes.func,
+  toggleViewHomePage: React.PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -59,6 +61,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     toggleViewEditTeam: () => {
       dispatch(toggleEditTeam())
+    },
+    toggleViewHomePage: () => {
+      dispatch(toggleViewHomePage())
     }
   }
 }

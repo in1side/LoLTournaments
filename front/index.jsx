@@ -33,6 +33,7 @@ const clearViewStatesOnViewActivation = store => next => action => {
         store.dispatch(setEditTeamToDefaultState())
         break
       case 'home':
+        if (store.getState().Teams.Home.get('isActive')) return // Do nothing if toggling when already at Home page
         store.dispatch(setCreateTeamToDefaultState())
         store.dispatch(setTeamInfoToDefaultState())
         store.dispatch(setEditTeamToDefaultState())

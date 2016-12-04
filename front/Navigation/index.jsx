@@ -83,6 +83,7 @@ export class Navigation extends Component {
       <div className='Navigation'>
         <AppBar
           title={title}
+          onTitleTouchTap={this.props.onTitleTouchTap}
           onLeftIconButtonTouchTap={toggleNavigation}
           iconElementRight={<FlatButton label={this.props.isLoggedIn ? 'Logout' : 'Login'} />}
           onRightIconButtonTouchTap={() => {
@@ -115,7 +116,8 @@ Navigation.propTypes = {
   toggleNavigation: React.PropTypes.func,
   isLoggedIn: React.PropTypes.bool,
   setAsLoggedIn: React.PropTypes.func,
-  setAsLoggedOut: React.PropTypes.func
+  setAsLoggedOut: React.PropTypes.func,
+  onTitleTouchTap: React.PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => {
