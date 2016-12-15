@@ -26,28 +26,29 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Set up associations and initialize Sequelize
-db.User.belongsTo(db.Team)
+db.Team.belongsTo(db.Tournament, { foreignKey: { allowNull: false } })
 models.sequelize.sync(dbSyncConfig)
 
 // Express Middleware
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors())
-// Only allow HTTP requests if valid JWT sent
-app.use((req, res, next) => {
-  if (req.path === '/getAllTeams') return next() // Ignore JWT validation for this
-  const clientJWT = req.headers.authorization.substring(7) // Extract 'Bearer ' from header
 
-  jwt.verify(clientJWT, CLIENT_SECRET, (err) => {
-    if (err !== null) {
-      console.log('Invalid JWT... REJECTING')
-      console.log(err)
-      return res.status(500).send({ message: err })
-    }
-    console.log('Valid JWT... PASSING')
-    next()
-  })
-})
+// Only allow HTTP requests if valid JWT sent
+// app.use((req, res, next) => {
+//   if (req.path === '/getAllTeams') return next() // Ignore JWT validation for this
+//   const clientJWT = req.headers.authorization.substring(7) // Extract 'Bearer ' from header
+//
+//   jwt.verify(clientJWT, CLIENT_SECRET, (err) => {
+//     if (err !== null) {
+//       console.log('Invalid JWT... REJECTING')
+//       console.log(err)
+//       return res.status(500).send({ message: err })
+//     }
+//     console.log('Valid JWT... PASSING')
+//     next()
+//   })
+// })
 
 /**
 * Require all route files in the 'routes' directory.
