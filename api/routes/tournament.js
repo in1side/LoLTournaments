@@ -37,5 +37,9 @@ module.exports = (app) => {
       tournament.destroy()
       res.send({ message: 'Tournament was successfully deleted!' })
     })
+    .catch((error) => {
+      console.log(error)
+      res.send({ message: 'Something broke delete tournament...' })
+    })
   })
 }

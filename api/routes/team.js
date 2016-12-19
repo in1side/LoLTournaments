@@ -10,6 +10,10 @@ module.exports = (app) => {
       if (teams === null) return res.send({ message: 'No teams exist' })
       res.send(teams)
     })
+    .catch((error) => {
+      console.log(error)
+      res.send({ message: 'Something broke get all teams...' })
+    })
   })
 
   // Create and return team with given name, members and tournamentId.
@@ -18,16 +22,26 @@ module.exports = (app) => {
     const { name, members, tournamentId } = req.body
 
     // Check if tournament exists
-    db.findById(tournamentId)
+    db.Tournament.findById(tournamentId)
     .then((tournament) => {
       if (tournament === null) return res.send({ message: 'Tournament doesn\'t exist.' })
 
       // Attempt team creation
-      db.Team.findOrCreate({ where: { name, tournamentId }, defaults: {name, members, tournamentId} })
+      db.Team.findOrCreate({ where: { name, TournamentId: tournamentId }, defaults: { name, members, TournamentId: tournamentId } })
       .then((team, isSuccessful) => {
+        throw Error('HAHAHAHAH')
+        return
         if (!isSuccessful) return res.send({ message: 'Team with that name already exists in this tournament.' })
         res.send({ team, message: 'Successfully created team!' })
       })
+      .catch((error) => {
+        console.log(error)
+        res.send({ message: 'Something broke create team when trying to creating team...' })
+      })
+    })
+    .catch((error) => {
+      console.log(error)
+      res.send({ message: 'Something broke create team when searching for tournament...' })
     })
   })
 
@@ -37,17 +51,25 @@ module.exports = (app) => {
     const { teamId, tournamentId } = req.body
 
     // Check if tournament exists
-    db.findById(tournamentId)
+    db.Tournament.findById(tournamentId)
     .then((tournament) => {
       if (tournament === null) return res.send({ message: 'Tournament doesn\'t exist.' })
 
       // Attemp to delete team
-      db.findById(teamId)
+      db.Team.findById(teamId)
       .then((team) => {
         if (team === null) return res.send({ message: 'Team doesn\'t exist.' })
         team.destroy()
         res.send({ message: 'Team deletion successful!' })
       })
+      .catch((error) => {
+        console.log(error)
+        res.send({ message: 'Something broke get delete team when trying to delete team...' })
+      })
+    })
+    .catch((error) => {
+      console.log(error)
+      res.send({ message: 'Something broke get delete team when trying to find tournament...' })
     })
   })
 }
