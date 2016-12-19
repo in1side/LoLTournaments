@@ -11,9 +11,9 @@ module.exports = function (sequelize, DataTypes) {
         notEmpty: true
       }
     },
-    // Array of objects containing member id (Auth0 id's), summoner name and role (role is null if ARAM tournament)
+    // Array of arrays containing member id (Auth0 id's), summoner name and role (role is null if ARAM tournament)
     members: {
-      type: DataTypes.ARRAY(DataTypes.TEXT),
+      type: DataTypes.ARRAY(DataTypes.ARRAY(DataTypes.STRING)),
       allowNull: false
     }
   }, {

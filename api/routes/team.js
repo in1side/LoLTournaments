@@ -4,7 +4,7 @@ const db = require('../models')
 
 module.exports = (app) => {
   // Return all teams with attributes id, name and members
-  app.get('/find/allTeams', (req, res, err) => {
+  app.get('/get/allTeams', (req, res, err) => {
     db.Team.findAll({ attributes: ['id', 'name', 'members'], raw: true })
     .then((teams) => {
       if (teams === null) return res.send({ message: 'No teams exist' })
