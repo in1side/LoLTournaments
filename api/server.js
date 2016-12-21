@@ -7,13 +7,14 @@ const bodyParser = require('body-parser')
 const models = require('./models')
 const constants = require('../constants')
 const cors = require('cors')
-const jwt = require('jsonwebtoken')
+const path = require('path')
+// const jwt = require('jsonwebtoken')
 
 // Constants
-const CLIENT_SECRET = require('./constants').client_secret
+// const CLIENT_SECRET = require('./constants').client_secret
 global.db = models
 global.constants = constants
-const ROUTES_PATH = __dirname + '/routes'
+const ROUTES_PATH = path.join(__dirname, 'routes')
 let dbSyncConfig = {
   force: false
 }

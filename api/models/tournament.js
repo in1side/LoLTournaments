@@ -37,6 +37,10 @@ module.exports = function (sequelize, DataTypes) {
         min: 2 // NOTE: Subject to change
       }
     },
+    // Team id's containing players participating in tournament
+    teams: {
+      type: DataTypes.ARRAY(DataTypes.INTEGER)
+    },
     // Requirements for eligible players
     requirements: {
       type: DataTypes.STRING

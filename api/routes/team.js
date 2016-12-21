@@ -27,7 +27,7 @@ module.exports = (app) => {
       if (tournament === null) return res.send({ message: 'Tournament doesn\'t exist.' })
 
       // Attempt team creation
-      db.Team.findOrCreate({ where: { name, tournamentId }, defaults: { name, members, tournamentId } })
+      return db.Team.findOrCreate({ where: { name, tournamentId }, defaults: { name, members, tournamentId } })
       .spread((team, isSuccessful) => {
         if (!isSuccessful) return res.send({ message: 'Team with that name already exists in this tournament.' })
         res.send({ team, message: 'Successfully created team!' })
@@ -54,7 +54,7 @@ module.exports = (app) => {
       if (tournament === null) return res.send({ message: 'Tournament doesn\'t exist.' })
 
       // Attemp to delete team
-      db.Team.findById(teamId)
+      return db.Team.findById(teamId)
       .then((team) => {
         if (team === null) return res.send({ message: 'Team doesn\'t exist.' })
         team.destroy()
