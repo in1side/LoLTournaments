@@ -37,6 +37,10 @@ module.exports = function (sequelize, DataTypes) {
         min: 2 // NOTE: Subject to change
       }
     },
+    // Applicannt id which gives access to summoner name and application status (bool). Format: [['SummonerName', bool], ...]
+    applicants: {
+      type: DataTypes.ARRAY(DataTypes.INTEGER)
+    },
     // Team id's containing players participating in tournament
     teams: {
       type: DataTypes.ARRAY(DataTypes.INTEGER)

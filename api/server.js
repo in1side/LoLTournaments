@@ -28,6 +28,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Set up associations and initialize Sequelize
 db.Team.belongsTo(db.Tournament, { as: 'tournament', onDelete: 'CASCADE' })
+db.Application.belongsTo(db.Tournament, { as: 'tournament', onDelete: 'CASCADE' })
 models.sequelize.sync(dbSyncConfig)
 
 // Express Middleware
