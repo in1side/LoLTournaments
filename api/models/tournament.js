@@ -11,7 +11,7 @@ module.exports = function (sequelize, DataTypes) {
       }
     },
     // Auth0 userID
-    host: {
+    hostId: {
       type: DataTypes.STRING(),
       allowNull: false
     },

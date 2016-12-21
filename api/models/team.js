@@ -15,6 +15,11 @@ module.exports = function (sequelize, DataTypes) {
     members: {
       type: DataTypes.ARRAY(DataTypes.ARRAY(DataTypes.STRING)),
       allowNull: false
+    },
+    // Tournament id
+    tournamentId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     tableName: 'teams'

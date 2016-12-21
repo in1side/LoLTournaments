@@ -4,7 +4,7 @@ const db = require('../models')
 
 module.exports = (app) => {
   // Return all teams with attributes id, name and members
-  app.get('/get/allTeams', (req, res, err) => {
+  app.get('/team/getAll', (req, res, err) => {
     db.Team.findAll({ attributes: ['id', 'name', 'members'], raw: true })
     .then((teams) => {
       if (teams === null) return res.send({ message: 'No teams exist' })
@@ -18,7 +18,7 @@ module.exports = (app) => {
 
   // Create and return team with given name, members and tournamentId.
   // Fails if tournament doesn't exist or team name taken within same tournament
-  app.post('/create/team', (req, res, err) => {
+  app.post('/team/create', (req, res, err) => {
     const { name, members, tournamentId } = req.body
 
     // Check if tournament exists
@@ -27,10 +27,8 @@ module.exports = (app) => {
       if (tournament === null) return res.send({ message: 'Tournament doesn\'t exist.' })
 
       // Attempt team creation
-      db.Team.findOrCreate({ where: { name, TournamentId: tournamentId }, defaults: { name, members, TournamentId: tournamentId } })
-      .then((team, isSuccessful) => {
-        throw Error('HAHAHAHAH')
-        return
+      db.Team.findOrCreate({ where: { name, tournamentId }, defaults: { name, members, tournamentId } })
+      .spread((team, isSuccessful) => {
         if (!isSuccessful) return res.send({ message: 'Team with that name already exists in this tournament.' })
         res.send({ team, message: 'Successfully created team!' })
       })
@@ -47,7 +45,7 @@ module.exports = (app) => {
 
   // Delete team from tournament.
   // Fails if tournament doesn't exist or if team doesn't exist
-  app.post('/delete/team', (req, res, err) => {
+  app.post('/team/delete', (req, res, err) => {
     const { teamId, tournamentId } = req.body
 
     // Check if tournament exists
