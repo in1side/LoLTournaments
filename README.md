@@ -1,5 +1,5 @@
-# LoLTeams
-Simple League of Legends web app that allows users to create and manage tournaments they are hosting.
+# LoLTournaments
+Simple League of Legends web app that allows users to create and manage tournaments they are hosting. Players interested can search, apply and modify their applications.
 
 ## Instructions
 1. Host a PostgreSQL server on port `5432`.
