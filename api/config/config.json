@@ -2,7 +2,7 @@
   "development": {
     "username": null,
     "password": null,
-    "database": "Test-LoLTeams",
+    "database": "test-lol-tournaments",
     "host": "127.0.0.1",
     "port": 5432,
     "dialect": "postgres"
@@ -10,7 +10,7 @@
   "test": {
     "username": null,
     "password": null,
-    "database": "Test-LoLTeams",
+    "database": "test-lol-tournaments",
     "host": "127.0.0.1",
     "port": 5432,
     "dialect": "postgres"
@@ -18,7 +18,7 @@
   "production": {
     "username": null,
     "password": null,
-    "database": "database_production",
+    "database": "lol-tournaments",
     "host": "127.0.0.1",
     "dialect": "postgres"
   }
