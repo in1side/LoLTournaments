@@ -11,6 +11,11 @@ module.exports = function (sequelize, DataTypes) {
         notEmpty: true
       }
     },
+    // Auth0 userID
+    applicantId: {
+      type: DataTypes.STRING(),
+      allowNull: false
+    },
     // State of application
     status: {
       type: DataTypes.BOOLEAN
