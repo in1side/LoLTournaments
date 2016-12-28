@@ -17,13 +17,17 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false
     },
     // State of application
-    status: {
+    isApproved: {
       type: DataTypes.BOOLEAN
     },
     // Tournament id
     tournamentId: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    // Team that the applicant belongs to. Should only be set when status is true
+    teamId: {
+      type: DataTypes.INTEGER
     }
   }, {
     tableName: 'applications'

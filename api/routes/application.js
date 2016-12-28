@@ -7,7 +7,7 @@ module.exports = (app) => {
   app.post('/applications/getAll', (req, res, err) => {
     const { tournamentId } = req.body
 
-    db.Application.findAll({ attributes: ['id', 'summonerName', 'status'], where: { tournamentId } })
+    db.Application.findAll({ attributes: ['id', 'summonerName', 'isApproved'], where: { tournamentId } })
     .then((applications) => {
       if (applications === null) return res.send({ message: 'No applications exist for this tournament.' })
       res.send({ applications })
@@ -22,7 +22,7 @@ module.exports = (app) => {
     db.Tournament.findById(tournamentId)
     .then((tournament) => {
       if (tournament === null) return res.send({ message: 'The given tournament doesn\'t exist.' })
-      db.Application.findOrCreate({ where: { tournamentId, applicantId }, defaults: { summonerName, status: false } })
+      db.Application.findOrCreate({ where: { tournamentId, applicantId }, defaults: { summonerName, isApproved: false } })
       .spread((application, isSuccessful) => {
         if (!isSuccessful) return res.send({ message: 'You\'ve already made an application to this tournament' })
         res.send({ application })
@@ -71,14 +71,14 @@ module.exports = (app) => {
     }
   })
 
-  // Toggles an application's status and updates and saves its entry in the database
-  app.post('/applications/toggleStatus', (req, res, err) => {
+  // Toggles an application's isApproved status and updates and saves its entry in the database
+  app.post('/applications/toggleIsApproved', (req, res, err) => {
     const { applicationId } = req.body
     db.Application.findById(applicationId)
     .then((application) => {
       if (application === null) return res.send({ message: 'That application doesn\'t exist.' })
 
-      application.set('status', !application.status)
+      application.set('isApproved', !application.isApproved)
       return application.save()
       .then((result) => {
         // TODO: Handle when result is a Sequelize.ValidationError
@@ -87,7 +87,7 @@ module.exports = (app) => {
     })
     .catch((error) => {
       console.log(error)
-      res.send({ message: 'Something went wrong with toggling the application status...' })
+      res.send({ message: 'Something went wrong with toggling the application approved status...' })
     })
   })
 }
