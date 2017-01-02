@@ -3,16 +3,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import 'whatwg-fetch'
-import moment from 'moment'
 
 // Action Creators
 import { saveTournaments, deleteTournaments } from './ducks'
 
 // material-ui
-// import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
 
 export class Home extends Component {
-  componentDidMount () {
+  getAllTournaments = () => {
     fetch('http://localhost:3000/tournament/getAll', {
       method: 'GET',
       'headers': {
@@ -24,7 +23,7 @@ export class Home extends Component {
     })
     .then((result) => {
       const { tournaments } = result
-      // TODO: Make times human readable
+
       this.props.saveTournaments(tournaments)
     })
     .catch((error) => {
@@ -32,10 +31,54 @@ export class Home extends Component {
     })
   }
 
+  componentDidMount () {
+    this.getAllTournaments()
+  }
+
+  createTournamentRows = () => {
+    return this.props.tournaments.map((tournament) => {
+      return (
+        <TableRow
+          key={`tournament${tournament.id}`}
+          // TODO: Figure out why this doesn't work. Then make clicking go to tournament info page
+          onClick={() => {
+            console.log('hi')
+          }}
+        >
+          <TableRowColumn key={`tournament${tournament.id}-name`}>{tournament.name}</TableRowColumn>
+          <TableRowColumn key={`tournament${tournament.id}-date`}>{tournament.date}</TableRowColumn>
+          <TableRowColumn key={`tournament${tournament.id}-registrationDeadline`}>{tournament.registrationDeadline}</TableRowColumn>
+          <TableRowColumn key={`tournament${tournament.id}-totalPlayers`}>{tournament.totalPlayers}</TableRowColumn>
+          <TableRowColumn key={`tournament${tournament.id}-server`}>{tournament.server}</TableRowColumn>
+        </TableRow>
+      )
+    })
+  }
+
   render () {
     return (
       <div className='Home'>
-        {/* Table Goes Here */}
+        <Table
+          selectable={false}
+        >
+          <TableHeader
+            displaySelectAll={false}
+            adjustForCheckbox={false}
+          >
+            <TableRow>
+              <TableHeaderColumn>Name</TableHeaderColumn>
+              <TableHeaderColumn>Date</TableHeaderColumn>
+              <TableHeaderColumn>Registration Deadline (with Time Zone)</TableHeaderColumn>
+              <TableHeaderColumn>Total Players</TableHeaderColumn>
+              <TableHeaderColumn>Server</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody
+            displayRowCheckbox={false}
+          >
+            {this.createTournamentRows()}
+          </TableBody>
+        </Table>
       </div>
     )
   }
