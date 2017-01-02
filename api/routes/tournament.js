@@ -1,14 +1,25 @@
 'use strict'
 
 const db = require('../models')
+const moment = require('moment')
 
 module.exports = (app) => {
-  // Get all tournaments' id, name, date, registrationDeadline, totalPlayers, teams, server and updatedAt timestamp
+  // Get all tournaments' id, name, date, registrationDeadline, totalPlayers, teams, server
+  // and updatedAt timestamp ordered by updatedAt timestamp in descending order
   app.get('/tournament/getAll', (req, res, err) => {
-    db.Tournament.findAll({ attributes: ['id', 'name', 'date', 'registrationDeadline', 'totalPlayers', 'teams', 'server', 'updatedAt'], raw: true })
+    db.Tournament.findAll({ attributes: ['id', 'name', 'date', 'registrationDeadline', 'totalPlayers', 'teams', 'server'], order: [['updatedAt', 'DESC']], raw: true })
     .then((tournaments) => {
       if (tournaments.length === 0) return res.send({ message: 'No tournaments exist.' })
-      res.send({ tournaments })
+
+      // Make date and registrationDeadline human readable
+      const tournamentsWithHumanReadableTimes = tournaments.map((tournament) => {
+        tournament.date = moment(tournament.date, 'YYYY-MM-DD HH:mm:ss.SSSZ').format('HH:mm (Z) MMM DD, YYYY ')
+        tournament.registrationDeadline = moment(tournament.registrationDeadline, 'YYYY MMM DD HH:mm:ss.SSSZ').format('HH:mm (Z) MMM DD, YYYY ')
+
+        return tournament
+      })
+
+      res.send({ tournaments: tournamentsWithHumanReadableTimes })
     })
     .catch((error) => {
       console.log(error)
@@ -18,9 +29,9 @@ module.exports = (app) => {
 
   // Create a tournament with the given name, hostId, date, registrationDeadline, server
   app.post('/tournament/create', (req, res, err) => {
-    const { name, hostId, date, registrationDeadline, server } = req.body
+    const { name, hostId, date, registrationDeadline, server, totalPlayers } = req.body
 
-    db.Tournament.findOrCreate({where: { name, hostId }, defaults: { date, registrationDeadline, server, teams: [] }})
+    db.Tournament.findOrCreate({where: { name, hostId }, defaults: { date, registrationDeadline, server, teams: [], totalPlayers }})
     .spread((tournament, isSuccessful) => {
       if (!isSuccessful) return res.send({ message: 'Failed to create tournament.' })
       res.send({ tournament, message: 'Successfully created tournament!' })

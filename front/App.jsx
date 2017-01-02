@@ -1,76 +1,22 @@
 'use strict'
 
-require('./styles.scss')
-
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
-// Containers
-import TeamsHomePage from './Teams'
+// Views
+import Home from './Home'
 
-// Components
-import Navigation from './Navigation'
+// material-ui
+import AppBar from 'material-ui/AppBar'
 
-// Actions
-import { toggleView as toggleCreateTeam } from './Teams/ducks/create'
-import { toggleView as toggleEditTeam } from './Teams/ducks/edit'
-import { toggleViewHomePage } from './Teams/ducks/home'
-
-export class App extends Component {
+export default class App extends Component {
   render () {
-    const menuActions = [
-      {
-        text: 'Create Team',
-        handler: () => {
-          this.props.toggleViewCreateTeam()
-        }
-      },
-      {
-        text: 'Edit My Teams',
-        handler: () => {
-          // TODO: toggle view here
-          this.props.toggleViewEditTeam()
-        }
-      }
-    ]
-
     return (
       <div className='App'>
-        <Navigation title='LoL Teams' onTitleTouchTap={this.props.toggleViewHomePage} actions={menuActions} />
-        <TeamsHomePage />
+        <AppBar
+          title='LoL Tournaments'
+        />
+        <Home />
       </div>
     )
   }
 }
-
-App.propTypes = {
-  Teams: React.PropTypes.object.isRequired,
-  toggleViewCreateTeam: React.PropTypes.func,
-  toggleViewEditTeam: React.PropTypes.func,
-  toggleViewHomePage: React.PropTypes.func
-}
-
-const mapStateToProps = (state, ownProps) => {
-  return state
-}
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    toggleViewCreateTeam: () => {
-      dispatch(toggleCreateTeam())
-    },
-    toggleViewEditTeam: () => {
-      dispatch(toggleEditTeam())
-    },
-    toggleViewHomePage: () => {
-      dispatch(toggleViewHomePage())
-    }
-  }
-}
-
-const connectedApp = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App)
-
-export default connectedApp

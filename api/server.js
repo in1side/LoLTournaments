@@ -1,5 +1,6 @@
 'use strict'
 
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const fs = require('fs')
@@ -8,10 +9,9 @@ const models = require('./models')
 const constants = require('../constants')
 const cors = require('cors')
 const path = require('path')
-// const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 // Constants
-// const CLIENT_SECRET = require('./constants').client_secret
 global.db = models
 global.constants = constants
 const ROUTES_PATH = path.join(__dirname, 'routes')
@@ -39,10 +39,10 @@ app.use(cors())
 
 // Only allow HTTP requests if valid JWT sent
 // app.use((req, res, next) => {
-//   if (req.path === '/getAllTeams') return next() // Ignore JWT validation for this
+//   if (req.path === '/tournament/getAll') return next() // Ignore JWT validation for this
 //   const clientJWT = req.headers.authorization.substring(7) // Extract 'Bearer ' from header
 //
-//   jwt.verify(clientJWT, CLIENT_SECRET, (err) => {
+//   jwt.verify(clientJWT, process.env.SECRET, (err) => {
 //     if (err !== null) {
 //       console.log('Invalid JWT... REJECTING')
 //       console.log(err)
