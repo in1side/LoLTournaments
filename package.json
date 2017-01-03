@@ -63,8 +63,8 @@
       "constants",
       "fetch",
       "Immutable",
-      "_",
-      "localStorage"
+      "localStorage",
+      "window"
     ]
   },
   "ava": {

@@ -8,7 +8,7 @@ import 'whatwg-fetch'
 import { saveTournaments, deleteTournaments } from './ducks'
 
 // material-ui
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
+import {Card, CardTitle, CardText} from 'material-ui/Card'
 
 export class Home extends Component {
   getAllTournaments = () => {
@@ -31,26 +31,30 @@ export class Home extends Component {
     })
   }
 
-  componentDidMount () {
+  componentWillMount () {
     this.getAllTournaments()
   }
 
-  createTournamentRows = () => {
+  createTournamentCards = () => {
+    if (this.props.tournaments === undefined) return
+
     return this.props.tournaments.map((tournament) => {
       return (
-        <TableRow
-          key={`tournament${tournament.id}`}
-          // TODO: Figure out why this doesn't work. Then make clicking go to tournament info page
-          onClick={() => {
-            console.log('hi')
+        <Card
+          style={{ margin: '20px' }}
+          onTouchTap={() => {
+            // TODO: Go to tournament page
+            console.log('Card clicked', tournament.id)
           }}
+          key={`tournament${tournament.id}`}
         >
-          <TableRowColumn key={`tournament${tournament.id}-name`}>{tournament.name}</TableRowColumn>
-          <TableRowColumn key={`tournament${tournament.id}-date`}>{tournament.date}</TableRowColumn>
-          <TableRowColumn key={`tournament${tournament.id}-registrationDeadline`}>{tournament.registrationDeadline}</TableRowColumn>
-          <TableRowColumn key={`tournament${tournament.id}-totalPlayers`}>{tournament.totalPlayers}</TableRowColumn>
-          <TableRowColumn key={`tournament${tournament.id}-server`}>{tournament.server}</TableRowColumn>
-        </TableRow>
+          <CardTitle title={tournament.name} subtitle={`Server: ${tournament.server}`} />
+          <CardText>
+            <p>{`Date: ${tournament.date}`}</p>
+            <p>{`Registration Deadline: ${tournament.registrationDeadline}`}</p>
+            <p>{`Total Players: ${tournament.totalPlayers}`}</p>
+          </CardText>
+        </Card>
       )
     })
   }
@@ -58,27 +62,9 @@ export class Home extends Component {
   render () {
     return (
       <div className='Home'>
-        <Table
-          selectable={false}
-        >
-          <TableHeader
-            displaySelectAll={false}
-            adjustForCheckbox={false}
-          >
-            <TableRow>
-              <TableHeaderColumn>Name</TableHeaderColumn>
-              <TableHeaderColumn>Date</TableHeaderColumn>
-              <TableHeaderColumn>Registration Deadline (with Time Zone)</TableHeaderColumn>
-              <TableHeaderColumn>Total Players</TableHeaderColumn>
-              <TableHeaderColumn>Server</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody
-            displayRowCheckbox={false}
-          >
-            {this.createTournamentRows()}
-          </TableBody>
-        </Table>
+        <div style={{ margin: '40px' }}>
+          {this.createTournamentCards()}
+        </div>
       </div>
     )
   }
