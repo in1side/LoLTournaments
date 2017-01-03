@@ -50,9 +50,10 @@ export class Home extends Component {
         >
           <CardTitle title={tournament.name} subtitle={`Server: ${tournament.server}`} />
           <CardText>
-            <p>{`Date: ${tournament.date}`}</p>
-            <p>{`Registration Deadline: ${tournament.registrationDeadline}`}</p>
-            <p>{`Total Players: ${tournament.totalPlayers}`}</p>
+            <p><b>Date:&#32;</b>{tournament.date}</p>
+            <p><b>Registration Deadline:&#32;</b>{tournament.registrationDeadline}</p>
+            <p><b>Total Players:&#32;</b>{tournament.totalPlayers}</p>
+            <p>{tournament.description}</p>
           </CardText>
         </Card>
       )
