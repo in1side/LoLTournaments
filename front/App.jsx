@@ -5,6 +5,7 @@ import Auth0Lock from 'auth0-lock'
 
 // Views
 import Home from './Home'
+import Host from './Host'
 
 // material-ui
 import AppBar from 'material-ui/AppBar'
@@ -27,8 +28,16 @@ export default class App extends Component {
         responseType: 'token'
       },
       additionalSignUpFields: [{
-        name: 'Username',
-        placeholder: 'Username'
+        name: 'displayName',
+        placeholder: 'Display Name'
+      }, {
+        type: 'select',
+        name: 'userType',
+        placeholder: 'Are you a contestant or host?',
+        options: [
+          {value: 'contestant', label: 'Contestant'},
+          {value: 'host', label: 'Host'}
+        ]
       }],
       loginAfterSignUp: true,
       rememberLastLogin: true
@@ -73,6 +82,7 @@ export default class App extends Component {
           iconElementRight={this.toggleLoginLogoutButton()}
         />
         <Home />
+        <Host />
       </div>
     )
   }
