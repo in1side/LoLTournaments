@@ -25,15 +25,13 @@ export default class App extends Component {
     this.lock = new Auth0Lock(CLIENT_ID, DOMAIN, {
       auth: {
         redirectUrl: 'http://localhost:8080',
-        responseType: 'token'
+        responseType: 'token',
+        params: { scope: 'openid' }
       },
       additionalSignUpFields: [{
-        name: 'displayName',
-        placeholder: 'Display Name'
-      }, {
         type: 'select',
         name: 'userType',
-        placeholder: 'Are you a contestant or host?',
+        placeholder: 'Contestant or host?',
         options: [
           {value: 'contestant', label: 'Contestant'},
           {value: 'host', label: 'Host'}
@@ -50,7 +48,7 @@ export default class App extends Component {
           console.log(error)
           return
         }
-
+        localStorage.setItem('accessToken', authResult.accessToken)
         localStorage.setItem('idToken', authResult.idToken)
         localStorage.setItem('profile', JSON.stringify(profile))
         this.setState({ isLoggedIn: true })

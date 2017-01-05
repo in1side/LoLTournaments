@@ -10,10 +10,17 @@ module.exports = function (sequelize, DataTypes) {
         notEmpty: true
       }
     },
-    // Auth0 userID
+    // Auth0 user_id
     hostId: {
       type: DataTypes.STRING(),
-      allowNull: false
+      allowNull: false,
+      unique: true
+    },
+    // Auth0 username
+    hostUsername: {
+      type: DataTypes.STRING(),
+      allowNull: false,
+      unique: true
     },
     // Date tournament occurs
     date: {

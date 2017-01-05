@@ -2,6 +2,7 @@
 
 const db = require('../models')
 const moment = require('moment')
+const request = require('request')
 
 module.exports = (app) => {
   // Get all tournaments' id, name, date, registrationDeadline, totalPlayers, teams, server
@@ -27,18 +28,61 @@ module.exports = (app) => {
     })
   })
 
-  // Create a tournament with the given name, hostId, date, registrationDeadline, server
-  app.post('/tournament/create', (req, res, err) => {
-    const { name, hostId, date, registrationDeadline, server, totalPlayers, description } = req.body
+  // Get all tournaments' id, name, date, registrationDeadline, totalPlayers, teams, server
+  // and updatedAt timestamp ordered by updatedAt timestamp in descending order
+  app.post('/tournament/getAllFromHost', (req, res, err) => {
+    const { hostId } = req.body
+    db.Tournament.findAll({ where: { hostId }, attributes: ['id', 'name', 'date', 'registrationDeadline', 'totalPlayers', 'teams', 'server', 'description'], order: [['updatedAt', 'DESC']], raw: true })
+    .then((tournaments) => {
+      if (tournaments.length === 0) return res.send({ message: 'You aren\'t hosting any tournaments.' })
 
-    db.Tournament.findOrCreate({where: { name, hostId }, defaults: { date, registrationDeadline, server, teams: [], totalPlayers, description }})
-    .spread((tournament, isSuccessful) => {
-      if (!isSuccessful) return res.send({ message: 'Failed to create tournament.' })
-      res.send({ tournament, message: 'Successfully created tournament!' })
+      // Make date and registrationDeadline human readable
+      const tournamentsWithHumanReadableTimes = tournaments.map((tournament) => {
+        tournament.date = moment(tournament.date, 'YYYY-MM-DD HH:mm:ss.SSSZ').format('h:mmA ([UTC]Z) MMM DD, YYYY ')
+        tournament.registrationDeadline = moment(tournament.registrationDeadline, 'YYYY MMM DD HH:mm:ss.SSSZ').format('h:mmA ([UTC]Z) MMM DD, YYYY ')
+
+        return tournament
+      })
+
+      res.send({ tournaments: tournamentsWithHumanReadableTimes })
     })
     .catch((error) => {
       console.log(error)
-      res.send({ message: 'Something broke create tournament...' })
+      res.send({ message: 'Something broke get all host\'s tournaments...' })
+    })
+  })
+
+  // Create a tournament with the given name, hostId, date, registrationDeadline, server
+  app.post('/tournament/create', (req, res, err) => {
+    const { accessToken, name, hostId, hostUsername, date, registrationDeadline, server, totalPlayers, description } = req.body
+
+    // Check if hostId is an actual valid host
+    const options = {
+      url: 'https://bsoropia.auth0.com/userinfo',
+      headers: {
+        Authorization: 'Bearer ' + accessToken
+      }
+    }
+
+    request(options, (error, response, body) => {
+      // Evaluate received user profile if valid accessToken
+      if ((error === null) && (response.statusCode === 200)) {
+        if (JSON.parse(body).user_metadata.userType !== 'host') return res.send({ message: 'Only hosts can create tournaments.' })
+
+        // Create tournament if user is host
+        db.Tournament.findOrCreate({where: { name, hostId }, defaults: { date, registrationDeadline, server, teams: [], totalPlayers, description, hostUsername }})
+        .spread((tournament, isSuccessful) => {
+          if (!isSuccessful) return res.send({ message: 'Failed to create tournament.' })
+          res.send({ tournament, message: 'Successfully created tournament!' })
+        })
+        .catch((error) => {
+          console.log('Find or create error:', error)
+          res.send({ message: 'Something broke create tournament...' })
+        })
+      } else { // Error or non 200 statusCode received
+        console.log('else', error, body)
+        res.send({ message: `Can't create tournament. Reason: ${body}` })
+      }
     })
   })
 
