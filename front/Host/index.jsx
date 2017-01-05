@@ -7,6 +7,11 @@ import { connect } from 'react-redux'
 // Action Creators
 import { saveHostTournaments } from './ducks'
 
+// material-ui
+import { Tabs, Tab } from 'material-ui/Tabs'
+import RaisedButton from 'material-ui/RaisedButton'
+
+
 export class Host extends Component {
   isUserHost = () => {
     if (localStorage.getItem('profile') === null) return
@@ -46,11 +51,32 @@ export class Host extends Component {
     }
   }
 
+  createTournamentTabs = () => {
+    if (this.props.tournaments === undefined) return
+
+    return this.props.tournaments.map((tournament) => {
+      return (
+        <Tab
+          label={tournament.name}
+          key={`my-tournament${tournament.id}`}
+        >
+          <p><b>Date:&#32;</b>{tournament.date}</p>
+          <p><b>Registration Deadline:&#32;</b>{tournament.registrationDeadline}</p>
+          <p><b>Total Players:&#32;</b>{tournament.totalPlayers}</p>
+          <p>{tournament.description}</p>
+        </Tab>
+      )
+    })
+  }
+
   render () {
     if (this.isUserHost()) {
       return (
         <div className='Host'>
-          <h1>HOST VIEW</h1>
+          <RaisedButton label='Create Tournament' primary />
+          <Tabs>
+            {this.createTournamentTabs()}
+          </Tabs>
         </div>
       )
     }
@@ -61,7 +87,7 @@ export class Host extends Component {
 const mapStateToProps = (state) => {
   const { Host } = state
   return {
-    tournaments: Host.tournaments
+    tournaments: Host.get('tournaments')
   }
 }
 

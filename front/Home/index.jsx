@@ -11,6 +11,13 @@ import { saveTournaments, deleteTournaments } from './ducks'
 import {Card, CardTitle, CardText} from 'material-ui/Card'
 
 export class Home extends Component {
+  isUserHost = () => {
+    if (localStorage.getItem('profile') === null) return
+
+    const userType = JSON.parse(localStorage.getItem('profile')).user_metadata.userType
+    return userType === 'host'
+  }
+
   getAllTournaments = () => {
     fetch('http://localhost:3000/tournament/getAll', {
       method: 'GET',
@@ -63,13 +70,18 @@ export class Home extends Component {
   }
 
   render () {
-    return (
-      <div className='Home'>
-        <div style={{ margin: '40px' }}>
-          {this.createTournamentCards()}
+    // Only render all tournaments if not a host
+    if (!this.isUserHost()) {
+      return (
+        <div className='Home'>
+          <div style={{ margin: '40px' }}>
+            {this.createTournamentCards()}
+          </div>
         </div>
-      </div>
-    )
+      )
+    } else {
+      return null
+    }
   }
 }
 
