@@ -24,7 +24,9 @@ export class Home extends Component {
     .then((result) => {
       const { tournaments } = result
 
-      this.props.saveTournaments(tournaments)
+      if (tournaments !== undefined) {
+        this.props.saveTournaments(tournaments)
+      }
     })
     .catch((error) => {
       console.log(error)

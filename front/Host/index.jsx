@@ -2,8 +2,12 @@
 
 import React, { Component } from 'react'
 import 'whatwg-fetch'
+import { connect } from 'react-redux'
 
-export default class Host extends Component {
+// Action Creators
+import { saveHostTournaments } from './ducks'
+
+export class Host extends Component {
   isUserHost = () => {
     if (localStorage.getItem('profile') === null) return
 
@@ -24,9 +28,12 @@ export default class Host extends Component {
     .then((res) => {
       return res.json()
     })
-    .then((tournaments) => {
-      console.log(tournaments)
-      // TODO: Save in store
+    .then((results) => {
+      const { tournaments } = results
+
+      if (tournaments !== undefined) {
+        this.props.saveHostTournaments(tournaments)
+      }
     })
     .catch((error) => {
       console.log(error)
@@ -50,3 +57,25 @@ export default class Host extends Component {
     return null
   }
 }
+
+const mapStateToProps = (state) => {
+  const { Host } = state
+  return {
+    tournaments: Host.tournaments
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    saveHostTournaments: (tournaments) => {
+      dispatch(saveHostTournaments(tournaments))
+    }
+  }
+}
+
+const connectedHost = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Host)
+
+export default connectedHost
