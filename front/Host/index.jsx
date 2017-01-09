@@ -11,11 +11,12 @@ import { saveHostTournaments } from './ducks'
 import { Tabs, Tab } from 'material-ui/Tabs'
 import RaisedButton from 'material-ui/RaisedButton'
 
-
 export class Host extends Component {
   isUserHost = () => {
+    console.log('is profile here?');
     if (localStorage.getItem('profile') === null) return
 
+    console.log('is host?', userType === 'host');
     const userType = JSON.parse(localStorage.getItem('profile')).user_metadata.userType
     return userType === 'host'
   }

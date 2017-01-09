@@ -18,6 +18,7 @@ export default class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      // TODO: if accessToken is valid, login
       isLoggedIn: false
     }
 
@@ -64,7 +65,7 @@ export default class App extends Component {
         localStorage.removeItem('idToken')
         localStorage.removeItem('profile')
         // TODO: Redirect back to home
-        this.lock.logout()
+        this.lock.logout({ returnTo: 'http://localhost:8080' })
       }} />
       : <FlatButton label='Login' onTouchTap={() => {
         this.lock.show()

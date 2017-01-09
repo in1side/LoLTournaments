@@ -12,7 +12,7 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 >NOTE: Can configure database settings if you change the config file in `api/config/config.json`.
 
 ## TODO:
-
+1. Figure out why logging in doesn't cause view change
 
 ## Stuff to Refactor:
 1. Routes since there is some repeated code
