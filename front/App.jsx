@@ -12,7 +12,6 @@ import SignInSignOut from './SignInSignOut'
 // material-ui
 import AppBar from 'material-ui/AppBar'
 
-
 export default class App extends Component {
   render () {
     return (

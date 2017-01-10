@@ -12,10 +12,11 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 >NOTE: Can configure database settings if you change the config file in `api/config/config.json`.
 
 ## TODO:
-1. Figure out why logging in doesn't cause view change
+1. Client side stuff that uses accessToken must handle error when accessToken isn't valid
 
 ## Stuff to Refactor:
 1. Routes since there is some repeated code
+2. user type checking within components
 
 ## Future
 1. Translate routes to graphQL

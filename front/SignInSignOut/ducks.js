@@ -8,7 +8,6 @@ const SIGN_OUT = 'app/SignInSignOut/index/SIGN_OUT'
 
 // Reducer
 const initialState = Immutable.Map({
-  // TODO: if accessToken is valid, login
   isSignedIn: false
 })
 export default function SignInSignOutReducer (state = initialState, action) {

@@ -44,7 +44,7 @@ export class SignInSignOut extends Component {
           console.log(error)
           return
         }
-        localStorage.setItem('accessToken', authResult.accessToken)
+        // localStorage.setItem('accessToken', authResult.accessToken)
         localStorage.setItem('idToken', authResult.idToken)
         localStorage.setItem('profile', JSON.stringify(profile))
         this.props.signIn()
@@ -61,12 +61,31 @@ export class SignInSignOut extends Component {
         this.props.signOut()
         localStorage.removeItem('idToken')
         localStorage.removeItem('profile')
-        localStorage.removeItem('accessToken')
+
         this.lock.logout({ returnTo: 'http://localhost:8080' })
       }} />
       : <FlatButton label='Sign In' onTouchTap={() => {
         this.lock.show()
       }} />
+  }
+
+  signInIfValidIdToken = () => {
+    const idToken = localStorage.getItem('idToken')
+
+    if (idToken !== null) {
+      this.lock.getProfile(idToken, (error, profile) => {
+        if (error) throw error
+
+        localStorage.setItem('idToken', idToken)
+        localStorage.setItem('profile', JSON.stringify(profile))
+
+        this.props.signIn()
+      })
+    }
+  }
+
+  componentDidMount () {
+    this.signInIfValidIdToken()
   }
 
   render () {
