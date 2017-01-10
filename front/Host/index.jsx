@@ -13,10 +13,8 @@ import RaisedButton from 'material-ui/RaisedButton'
 
 export class Host extends Component {
   isUserHost = () => {
-    console.log('is profile here?');
     if (localStorage.getItem('profile') === null) return
 
-    console.log('is host?', userType === 'host');
     const userType = JSON.parse(localStorage.getItem('profile')).user_metadata.userType
     return userType === 'host'
   }
@@ -71,7 +69,7 @@ export class Host extends Component {
   }
 
   render () {
-    if (this.isUserHost()) {
+    if (this.isUserHost() && (this.props.isSignedIn)) {
       return (
         <div className='Host'>
           <RaisedButton label='Create Tournament' primary />
@@ -86,9 +84,10 @@ export class Host extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { Host } = state
+  const { Host, SignInSignOut } = state
   return {
-    tournaments: Host.get('tournaments')
+    tournaments: Host.get('tournaments'),
+    isSignedIn: SignInSignOut.get('isSignedIn')
   }
 }
 
