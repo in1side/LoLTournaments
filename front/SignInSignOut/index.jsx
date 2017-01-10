@@ -54,19 +54,26 @@ export class SignInSignOut extends Component {
   }
 
   toggleLoginLogoutButton = () => {
-    const { isSignedIn } = this.props
-    if (isSignedIn === null) return false // TODO: Uhh, handle when not initialized
-    return isSignedIn
-      ? <FlatButton label='Sign Out' onTouchTap={() => {
-        this.props.signOut()
-        localStorage.removeItem('idToken')
-        localStorage.removeItem('profile')
+    return this.props.isSignedIn
+      ? <FlatButton
+        style={{ color: 'rgb(255, 255, 255)' }}
+        label='Sign Out'
+        onTouchTap={() => {
+          this.props.signOut()
 
-        this.lock.logout({ returnTo: 'http://localhost:8080' })
-      }} />
-      : <FlatButton label='Sign In' onTouchTap={() => {
-        this.lock.show()
-      }} />
+          localStorage.removeItem('idToken')
+          localStorage.removeItem('profile')
+
+          this.lock.logout({ returnTo: 'http://localhost:8080' })
+        }}
+      />
+      : <FlatButton
+        style={{ color: 'rgb(255, 255, 255)' }}
+        label='Sign In'
+        onTouchTap={() => {
+          this.lock.show()
+        }}
+      />
   }
 
   signInIfValidIdToken = () => {
@@ -90,7 +97,7 @@ export class SignInSignOut extends Component {
 
   render () {
     return (
-      <div className='SignInSignOut'>
+      <div className='SignInSignOut' style={{ 'marginTop': '5px' }}>
         {this.toggleLoginLogoutButton()}
       </div>
     )
