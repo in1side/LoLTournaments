@@ -12,7 +12,7 @@ import {Card, CardTitle, CardText} from 'material-ui/Card'
 
 export class Home extends Component {
   isUserHost = () => {
-    if (localStorage.getItem('profile') === null) return
+    if (localStorage.getItem('profile') === null) return false
 
     const userType = JSON.parse(localStorage.getItem('profile')).user_metadata.userType
     return userType === 'host'
@@ -71,7 +71,9 @@ export class Home extends Component {
 
   render () {
     // Only render all tournaments if not a host
-    if (!this.isUserHost()) {
+    if (this.isUserHost()) {
+      return null
+    } else {
       return (
         <div className='Home'>
           <div style={{ margin: '40px' }}>
@@ -79,8 +81,6 @@ export class Home extends Component {
           </div>
         </div>
       )
-    } else {
-      return null
     }
   }
 }

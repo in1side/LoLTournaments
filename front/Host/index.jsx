@@ -4,6 +4,9 @@ import React, { Component } from 'react'
 import 'whatwg-fetch'
 import { connect } from 'react-redux'
 
+// Components
+import CreateTournament from './CreateTournament'
+
 // Action Creators
 import { saveHostTournaments } from './ducks'
 
@@ -12,6 +15,14 @@ import { Tabs, Tab } from 'material-ui/Tabs'
 import RaisedButton from 'material-ui/RaisedButton'
 
 export class Host extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      isCreatingNewTournament: false
+    }
+  }
+
   isUserHost = () => {
     if (localStorage.getItem('profile') === null) return
 
@@ -69,10 +80,26 @@ export class Host extends Component {
   }
 
   render () {
-    if (this.isUserHost() && (this.props.isSignedIn)) {
+    if (this.state.isCreatingNewTournament) {
       return (
         <div className='Host'>
-          <RaisedButton label='Create Tournament' primary />
+          <CreateTournament
+            handleClose={() => {
+              this.setState({ isCreatingNewTournament: false })
+            }}
+          />
+        </div>
+      )
+    } else if (this.isUserHost() && (this.props.isSignedIn)) {
+      return (
+        <div className='Host'>
+          <RaisedButton
+            label='Create Tournament'
+            primary
+            onTouchTap={() => {
+              this.setState({ isCreatingNewTournament: true })
+            }}
+          />
           <Tabs>
             {this.createTournamentTabs()}
           </Tabs>

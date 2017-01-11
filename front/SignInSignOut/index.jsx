@@ -44,11 +44,12 @@ export class SignInSignOut extends Component {
           console.log(error)
           return
         }
-        // localStorage.setItem('accessToken', authResult.accessToken)
+
+        localStorage.setItem('accessToken', authResult.accessToken)
         localStorage.setItem('idToken', authResult.idToken)
         localStorage.setItem('profile', JSON.stringify(profile))
+
         this.props.signIn()
-        console.log(profile)
       })
     })
   }
@@ -63,6 +64,7 @@ export class SignInSignOut extends Component {
 
           localStorage.removeItem('idToken')
           localStorage.removeItem('profile')
+          localStorage.removeItem('accessToken')
 
           this.lock.logout({ returnTo: 'http://localhost:8080' })
         }}
