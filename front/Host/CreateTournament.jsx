@@ -1,6 +1,7 @@
 'use strict'
 
 import React, { Component } from 'react'
+import moment from 'moment'
 
 // material-ui
 import RaisedButton from 'material-ui/RaisedButton'
@@ -25,9 +26,23 @@ export default class CreateTournament extends Component {
     }
   }
 
+  handleNameInput = (event, newName) => { this.setState({ name: newName }) }
+
   handleServerSeletion = (event, index, value) => {
     this.setState({ server: value })
   }
+
+  handleTotalPlayersInput = (event, newTotalPlayers) => { this.setState({ totalPlayers: parseInt(newTotalPlayers) }) }
+
+  handleStartDateSelection = (event, newStartDate) => { this.setState({ startDate: newStartDate }) }
+
+  handleStartTimeSelection = (event, newStartTime) => { this.setState({ startTime: newStartTime }) }
+
+  handleRegistrationDeadlineDateSelection = (event, newRegistrationDeadline) => { this.setState({ registrationDeadline: newRegistrationDeadline }) }
+
+  handleRegistrationDeadlineTimeSelection = (event, newRegistrationDeadlineTime) => { this.setState({ registrationDeadlineTime: newRegistrationDeadlineTime }) }
+
+  handleDescriptionInput = (event, newDescription) => { this.setState({ description: newDescription }) }
 
   render () {
     return (
@@ -41,6 +56,7 @@ export default class CreateTournament extends Component {
         <div>
           <TextField
             floatingLabelText='Name'
+            onChange={this.handleNameInput}
           />
           <SelectField
             floatingLabelText='Server'
@@ -62,31 +78,37 @@ export default class CreateTournament extends Component {
           </SelectField>
           <TextField
             floatingLabelText='Total Players'
+            onChange={this.handleTotalPlayersInput}
           />
         </div>
         <div>
           <DatePicker
             autoOk
             floatingLabelText='Start Date'
+            onChange={this.handleStartDateSelection}
           />
           <TimePicker
             id='startTime'
             format='ampm'
+            onChange={this.handleStartTimeSelection}
           />
         </div>
         <div>
           <DatePicker
             autoOk
             floatingLabelText='Registration Deadline'
+            onChange={this.handleRegistrationDeadlineDateSelection}
           />
           <TimePicker
             id='registrationDeadlineTime'
             format='ampm'
+            onChange={this.handleRegistrationDeadlineTimeSelection}
           />
         </div>
         <div>
           <TextField
             hintText='Description'
+            onChange={this.handleDescriptionInput}
           />
         </div>
       </div>

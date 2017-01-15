@@ -24,9 +24,10 @@ export class Host extends Component {
   }
 
   isUserHost = () => {
-    if (localStorage.getItem('profile') === null) return
+    const profile = localStorage.getItem('profile')
+    if (profile === null) return
 
-    const userType = JSON.parse(localStorage.getItem('profile')).user_metadata.userType
+    const userType = JSON.parse(profile).user_metadata.userType
     return userType === 'host'
   }
 

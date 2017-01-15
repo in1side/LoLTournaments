@@ -2,6 +2,8 @@
 Simple League of Legends web app that allows users to create and manage tournaments they are hosting. Players interested can search, apply and modify their applications.
 
 ## Instructions
+>NOTE: Unfortunately uses hard-coded Auth0 callbacks and credentials. If you want to run locally, you will need to have your own Auth0 account and app, with username settings active in Auth0's database, and app client secret to replace them. Sorry for the inconvenience, I will hopefully have a live demo up when done.
+
 1. Host a PostgreSQL server on port `5432`.
 2. Create 2 separate databases one called `test-lol-tournaments` and the other called `lol-tournaments`.
 3. Run `npm install` in the home directory of project to get all dependencies.
@@ -13,6 +15,9 @@ Extra: To populate database with dummy data, run `npm run seed-db`
 
 ## TODO:
 1. Client side stuff that uses accessToken must handle error when accessToken isn't valid
+2. Time zone support??? (Should probably only support NA for now because it's not what I want to focus on right now...)
+3. Figure out how to not hard-code user auth
+4. Only allow registration if registration deadline not passed
 
 ## Stuff to Refactor:
 1. Routes since there is some repeated code
