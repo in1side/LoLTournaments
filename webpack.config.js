@@ -51,7 +51,7 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(), // Allows additional plugins to work I think
     new HtmlwebpackPlugin({ // Used to create HTML page that links to output file
-      title: 'LoL Teams'
+      title: 'LoL Tournaments'
     }),
     new webpack.ProvidePlugin({
       ReactDOM: 'react-dom',

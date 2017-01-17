@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import moment from 'moment'
+import 'whatwg-fetch'
 
 // material-ui
 import RaisedButton from 'material-ui/RaisedButton'
@@ -10,6 +11,9 @@ import DatePicker from 'material-ui/DatePicker'
 import TimePicker from 'material-ui/TimePicker'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
+
+// Constants
+const DATE_SUBTRING_END_IDX = 10
 
 export default class CreateTournament extends Component {
   constructor (props) {
@@ -20,7 +24,7 @@ export default class CreateTournament extends Component {
       totalPlayers: null,
       startDate: null,
       startTime: null,
-      registrationDeadline: null,
+      registrationDeadlineDate: null,
       registrationDeadlineTime: null,
       description: ''
     }
@@ -28,33 +32,81 @@ export default class CreateTournament extends Component {
 
   handleNameInput = (event, newName) => { this.setState({ name: newName }) }
 
-  handleServerSeletion = (event, index, value) => {
-    this.setState({ server: value })
-  }
+  handleServerSeletion = (event, index, value) => { this.setState({ server: value }) }
 
   handleTotalPlayersInput = (event, newTotalPlayers) => { this.setState({ totalPlayers: parseInt(newTotalPlayers) }) }
 
-  handleStartDateSelection = (event, newStartDate) => { this.setState({ startDate: newStartDate }) }
+  handleStartDateSelection = (event, newStartDate) => { this.setState({ startDate: moment.utc(newStartDate).format() }) }
 
-  handleStartTimeSelection = (event, newStartTime) => { this.setState({ startTime: newStartTime }) }
+  handleStartTimeSelection = (event, newStartTime) => { this.setState({ startTime: moment.utc(newStartTime).format() }) }
 
-  handleRegistrationDeadlineDateSelection = (event, newRegistrationDeadline) => { this.setState({ registrationDeadline: newRegistrationDeadline }) }
+  handleRegistrationDeadlineDateSelection = (event, newRegistrationDeadlineDate) => { this.setState({ registrationDeadlineDate: moment.utc(newRegistrationDeadlineDate).format() }) }
 
-  handleRegistrationDeadlineTimeSelection = (event, newRegistrationDeadlineTime) => { this.setState({ registrationDeadlineTime: newRegistrationDeadlineTime }) }
+  handleRegistrationDeadlineTimeSelection = (event, newRegistrationDeadlineTime) => { this.setState({ registrationDeadlineTime: moment.utc(newRegistrationDeadlineTime).format() }) }
 
   handleDescriptionInput = (event, newDescription) => { this.setState({ description: newDescription }) }
+
+  submitForm = () => {
+    const {
+      name,
+      server,
+      totalPlayers,
+      startDate,
+      startTime,
+      registrationDeadlineDate,
+      registrationDeadlineTime,
+      description
+    } = this.state
+    const hostProfile = JSON.parse(localStorage.getItem('profile'))
+
+    // Form start timestamp from startDate and time by cutting out date and time, respectively, then appending
+    const date = startDate.substring(0, DATE_SUBTRING_END_IDX) + startTime.substring(DATE_SUBTRING_END_IDX)
+    // Form registrationDeadline timestamp from registrationDeadlineDate and time  by cutting out date and time, respectively, then appending
+    const registrationDeadline = registrationDeadlineDate.substring(0, DATE_SUBTRING_END_IDX) + registrationDeadlineTime.substring(DATE_SUBTRING_END_IDX)
+
+    fetch('http://localhost:3000/tournament/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken: localStorage.getItem('accessToken'),
+        name,
+        hostId: hostProfile.user_id,
+        hostUsername: hostProfile.username,
+        date,
+        registrationDeadline,
+        // server,
+        totalPlayers,
+        description
+      })
+    })
+    .then((res) => { return res.json() })
+    .then((result) => {
+      console.log(result)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
 
   render () {
     return (
       <div className='CreateTournament'>
+        <h1>Create New Tournament</h1>
         <RaisedButton
           label='Cancel'
           secondary
           onTouchTap={this.props.handleClose}
         />
-        <h1>Create New Tournament</h1>
+        <RaisedButton
+          primary
+          label='Submit'
+          onTouchTap={this.submitForm}
+        />
         <div>
           <TextField
+            id='nameField'
             floatingLabelText='Name'
             onChange={this.handleNameInput}
           />
@@ -77,6 +129,7 @@ export default class CreateTournament extends Component {
             <MenuItem value='TR' primaryText='TR' />
           </SelectField>
           <TextField
+            id='totalPlayersField'
             floatingLabelText='Total Players'
             onChange={this.handleTotalPlayersInput}
           />
@@ -89,6 +142,7 @@ export default class CreateTournament extends Component {
           />
           <TimePicker
             id='startTime'
+            floatingLabelText='Start Time'
             format='ampm'
             onChange={this.handleStartTimeSelection}
           />
@@ -101,16 +155,18 @@ export default class CreateTournament extends Component {
           />
           <TimePicker
             id='registrationDeadlineTime'
+            floatingLabelText='Registration Deadline Time'
             format='ampm'
             onChange={this.handleRegistrationDeadlineTimeSelection}
           />
         </div>
-        <div>
-          <TextField
-            hintText='Description'
-            onChange={this.handleDescriptionInput}
-          />
-        </div>
+        <TextField
+          floatingLabelText='Description'
+          multiLine
+          onChange={this.handleDescriptionInput}
+          rows={3}
+          style={{ width: '90vw' }}
+        />
       </div>
     )
   }
