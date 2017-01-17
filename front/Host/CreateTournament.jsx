@@ -19,14 +19,14 @@ export default class CreateTournament extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      name: '',
+      name: null,
       server: null,
       totalPlayers: null,
       startDate: null,
       startTime: null,
       registrationDeadlineDate: null,
       registrationDeadlineTime: null,
-      description: ''
+      description: null
     }
   }
 
@@ -46,6 +46,14 @@ export default class CreateTournament extends Component {
 
   handleDescriptionInput = (event, newDescription) => { this.setState({ description: newDescription }) }
 
+  isFormComplete = () => {
+    for (let key in this.state) {
+      if (this.state[key] === null) return false
+    }
+
+    return true
+  }
+
   submitForm = () => {
     const {
       name,
@@ -57,6 +65,13 @@ export default class CreateTournament extends Component {
       registrationDeadlineTime,
       description
     } = this.state
+
+    // TODO: Prompt to complete forms
+    if (!this.isFormComplete()) {
+      console.log('Complete the form please.')
+      return
+    }
+
     const hostProfile = JSON.parse(localStorage.getItem('profile'))
 
     // Form start timestamp from startDate and time by cutting out date and time, respectively, then appending
@@ -76,14 +91,15 @@ export default class CreateTournament extends Component {
         hostUsername: hostProfile.username,
         date,
         registrationDeadline,
-        // server,
+        server,
         totalPlayers,
         description
       })
     })
     .then((res) => { return res.json() })
     .then((result) => {
-      console.log(result)
+      // TODO: Flash message of success
+      this.props.handleClose()
     })
     .catch((error) => {
       console.log(error)

@@ -12,13 +12,13 @@ module.exports = (app) => {
     .then((tournaments) => {
       if (tournaments.length === 0) return res.send({ message: 'No tournaments exist.' })
 
-      // Make date and registrationDeadline human readable
-      const tournamentsWithHumanReadableTimes = tournaments.map((tournament) => {
-        tournament.date = moment(tournament.date, 'YYYY-MM-DD HH:mm:ss.SSSZ').format('h:mmA ([UTC]Z) MMM DD, YYYY ')
-        tournament.registrationDeadline = moment(tournament.registrationDeadline, 'YYYY MMM DD HH:mm:ss.SSSZ').format('h:mmA ([UTC]Z) MMM DD, YYYY ')
-
-        return tournament
-      })
+      // // Make date and registrationDeadline human readable
+      // const tournamentsWithHumanReadableTimes = tournaments.map((tournament) => {
+      //   tournament.date = moment(tournament.date, 'YYYY-MM-DD HH:mm:ss.SSSZ').format('h:mmA ([UTC]Z) MMM DD, YYYY ')
+      //   tournament.registrationDeadline = moment(tournament.registrationDeadline, 'YYYY MMM DD HH:mm:ss.SSSZ').format('h:mmA ([UTC]Z) MMM DD, YYYY ')
+      //
+      //   return tournament
+      // })
 
       res.send({ tournaments: tournamentsWithHumanReadableTimes })
     })

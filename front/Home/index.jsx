@@ -32,6 +32,7 @@ export class Home extends Component {
       const { tournaments } = result
 
       if (tournaments !== undefined) {
+        // TODO: Format all dates to machine time
         this.props.saveTournaments(tournaments)
       }
     })

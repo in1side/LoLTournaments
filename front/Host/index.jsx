@@ -32,6 +32,7 @@ export class Host extends Component {
   }
 
   getHostTournaments = () => {
+    console.log('hi');
     fetch('http://localhost:3000/tournament/getAllFromHost', {
       method: 'POST',
       headers: {
@@ -61,6 +62,13 @@ export class Host extends Component {
       this.getHostTournaments()
     }
   }
+
+  componentDidUpdate (prevProps, prevState) {
+    // Update host's teams every time they come back from creating tournaments
+    if (this.isDoneCreatingNewTournament(prevState)) this.getHostTournaments()
+  }
+
+  isDoneCreatingNewTournament = (prevState) => prevState.isCreatingNewTournament && !this.state.isCreatingNewTournament
 
   createTournamentTabs = () => {
     if (this.props.tournaments === undefined) return
