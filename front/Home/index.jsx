@@ -28,8 +28,8 @@ export class Home extends Component {
         'Content-Type': 'application/json'
       }
     })
-    .then((res) => {
-      return res.json()
+    .then(res => {
+      return util.throwExceptionIfStatusNot200(res)
     })
     .then((result) => {
       const { tournaments } = result

@@ -9,8 +9,12 @@ module.exports = (app) => {
 
     db.Application.findAll({ attributes: ['id', 'summonerName', 'isApproved'], where: { tournamentId } })
     .then((applications) => {
-      if (applications === null) return res.send({ message: 'No applications exist for this tournament.' })
-      res.send({ applications })
+      if (applications === null) return res.status(200).send({ message: 'No applications exist for this tournament.' })
+      res.status(200).send({ applications })
+    })
+    .catch((error) => {
+      console.log(error)
+      res.status(200).send({ error: 'Something broke when trying to get all applications...' })
     })
   })
 
@@ -21,16 +25,16 @@ module.exports = (app) => {
     // Check if tournament even exists
     db.Tournament.findById(tournamentId)
     .then((tournament) => {
-      if (tournament === null) return res.send({ message: 'The given tournament doesn\'t exist.' })
+      if (tournament === null) return res.status(200).send({ message: 'The given tournament doesn\'t exist.' })
       db.Application.findOrCreate({ where: { tournamentId, applicantId }, defaults: { summonerName, isApproved: false } })
       .spread((application, isSuccessful) => {
-        if (!isSuccessful) return res.send({ message: 'You\'ve already made an application to this tournament' })
-        res.send({ application })
+        if (!isSuccessful) return res.status(200).send({ message: 'You\'ve already made an application to this tournament' })
+        res.status(201).send({ message: 'Successfully created new application!' })
       })
     })
     .catch((error) => {
       console.log(error)
-      res.send({ message: 'Something went wrong when creating an application...' })
+      res.status(500).send({ error: 'Something went wrong when trying to create an application...' })
     })
   })
 
@@ -41,32 +45,32 @@ module.exports = (app) => {
     if (applicantId !== undefined) {
       db.Application.findOne({ where: { id: applicationId, applicantId } })
       .then((application) => {
-        if (application === null) return res.send({ message: 'Application doesn\'t exist.' })
+        if (application === null) return res.status(200).send({ message: 'Application doesn\'t exist.' })
         application.destroy()
-        res.send({ message: 'Application was successfully deleted!' })
+        res.status(200).send({ message: 'Application was successfully deleted!' })
       })
       .catch((error) => {
         console.log(error)
-        res.send({ message: 'Something went wrong trying to delete application as applicant...' })
+        res.status(500).send({ error: 'Something went wrong trying to delete application as applicant...' })
       })
     } else if (hostId !== undefined) { // Allow the tournament host delete permission
       db.Application.findOne({ where: { id: applicationId } })
       .then((application) => {
-        if (application === null) return res.send({ message: 'Application doesn\'t exist.' })
+        if (application === null) return res.status(200).send({ message: 'Application doesn\'t exist.' })
 
         return db.Tournament.findById(application.tournamentId)
         .then((tournament) => {
-          if (tournament === null) return res.send({ message: 'Tournament doesn\'t exist.' })
+          if (tournament === null) return res.status(200).send({ message: 'Tournament doesn\'t exist.' })
 
           if (tournament.hostId === hostId) {
             application.destroy()
-            res.send({ message: 'Application was successfully deleted!' })
+            res.status(200).send({ message: 'Application was successfully deleted!' })
           }
         })
       })
       .catch((error) => {
         console.log(error)
-        res.send({ message: 'Something went wrong trying to delete application as tournament host...' })
+        res.status(500).send({ error: 'Something went wrong trying to delete application as tournament host...' })
       })
     }
   })
@@ -76,18 +80,18 @@ module.exports = (app) => {
     const { applicationId } = req.body
     db.Application.findById(applicationId)
     .then((application) => {
-      if (application === null) return res.send({ message: 'That application doesn\'t exist.' })
+      if (application === null) return res.status(200).send({ message: 'That application doesn\'t exist.' })
 
       application.set('isApproved', !application.isApproved)
       return application.save()
       .then((result) => {
         // TODO: Handle when result is a Sequelize.ValidationError
-        res.send({ tournament: result })
+        res.status(200).send({ tournament: result })
       })
     })
     .catch((error) => {
       console.log(error)
-      res.send({ message: 'Something went wrong with toggling the application approved status...' })
+      res.status(500).send({ error: 'Something went wrong when trying to toggle the application approved status...' })
     })
   })
 }

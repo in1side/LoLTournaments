@@ -15,6 +15,9 @@ import MenuItem from 'material-ui/MenuItem'
 // Constants
 const DATE_SUBTRING_END_IDX = 10
 
+// Helpers
+import util from '../util'
+
 export default class CreateTournament extends Component {
   constructor (props) {
     super(props)
@@ -96,13 +99,17 @@ export default class CreateTournament extends Component {
         description
       })
     })
-    .then((res) => { return res.json() })
+    .then((res) => {
+      return util.throwExceptionIfStatusNot200(res)
+    })
     .then((result) => {
       // TODO: Flash message of success
       this.props.handleClose()
     })
     .catch((error) => {
+      // TODO: Flash message of failure
       console.log(error)
+      this.props.handleClose()
     })
   }
 
