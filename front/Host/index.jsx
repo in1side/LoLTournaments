@@ -14,6 +14,9 @@ import { saveHostTournaments } from './ducks'
 import { Tabs, Tab } from 'material-ui/Tabs'
 import RaisedButton from 'material-ui/RaisedButton'
 
+// Helpers
+import util from '../util'
+
 export class Host extends Component {
   constructor (props) {
     super(props)
@@ -32,7 +35,6 @@ export class Host extends Component {
   }
 
   getHostTournaments = () => {
-    console.log('hi');
     fetch('http://localhost:3000/tournament/getAllFromHost', {
       method: 'POST',
       headers: {
@@ -49,7 +51,15 @@ export class Host extends Component {
       const { tournaments } = results
 
       if (tournaments !== undefined) {
-        this.props.saveHostTournaments(tournaments)
+        // Format all dates to client timezone
+        const tournamentsModifiedToClientTimezone = tournaments.map((tournament) => {
+          tournament['date'] = util.modifyTimestampToClientTimezoneAndFormat(tournament['date'], 'h:mmA MMM DD, YYYY')
+          tournament['registrationDeadline'] = util.modifyTimestampToClientTimezoneAndFormat(tournament['registrationDeadline'], 'h:mmA MMM DD, YYYY')
+
+          return tournament
+        })
+
+        this.props.saveHostTournaments(tournamentsModifiedToClientTimezone)
       }
     })
     .catch((error) => {

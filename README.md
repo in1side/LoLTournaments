@@ -14,8 +14,7 @@ Simple League of Legends web app that allows users to create and manage tourname
 ## TODO:
 1. Figure out how to not hard-code user auth
 2. Only allow registration if registration deadline not passed
-3. Format UTC times to client's machine time
-4. Server should send error statuses with message
+3. Server should send error statuses with message
 
 ## Stuff to Refactor:
 1. Routes since there is some repeated code

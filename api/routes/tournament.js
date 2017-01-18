@@ -1,7 +1,7 @@
 'use strict'
 
 const db = require('../models')
-const moment = require('moment')
+// const moment = require('moment')
 const request = require('request')
 
 module.exports = (app) => {
@@ -20,7 +20,7 @@ module.exports = (app) => {
       //   return tournament
       // })
 
-      res.send({ tournaments: tournamentsWithHumanReadableTimes })
+      res.send({ tournaments })
     })
     .catch((error) => {
       console.log(error)
@@ -37,14 +37,14 @@ module.exports = (app) => {
       if (tournaments.length === 0) return res.send({ message: 'You aren\'t hosting any tournaments.' })
 
       // Make date and registrationDeadline human readable
-      const tournamentsWithHumanReadableTimes = tournaments.map((tournament) => {
-        tournament.date = moment(tournament.date, 'YYYY-MM-DD HH:mm:ss.SSSZ').format('h:mmA ([UTC]Z) MMM DD, YYYY ')
-        tournament.registrationDeadline = moment(tournament.registrationDeadline, 'YYYY MMM DD HH:mm:ss.SSSZ').format('h:mmA ([UTC]Z) MMM DD, YYYY ')
+      // const tournamentsWithHumanReadableTimes = tournaments.map((tournament) => {
+      //   tournament.date = moment(tournament.date, 'YYYY-MM-DD HH:mm:ss.SSSZ').format('h:mmA ([UTC]Z) MMM DD, YYYY ')
+      //   tournament.registrationDeadline = moment(tournament.registrationDeadline, 'YYYY MMM DD HH:mm:ss.SSSZ').format('h:mmA ([UTC]Z) MMM DD, YYYY ')
+      //
+      //   return tournament
+      // })
 
-        return tournament
-      })
-
-      res.send({ tournaments: tournamentsWithHumanReadableTimes })
+      res.send({ tournaments })
     })
     .catch((error) => {
       console.log(error)

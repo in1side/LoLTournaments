@@ -10,6 +10,9 @@ import { saveTournaments, deleteTournaments } from './ducks'
 // material-ui
 import {Card, CardTitle, CardText} from 'material-ui/Card'
 
+// Helpers
+import util from '../util'
+
 export class Home extends Component {
   isUserHost = () => {
     if (localStorage.getItem('profile') === null) return false
@@ -32,8 +35,15 @@ export class Home extends Component {
       const { tournaments } = result
 
       if (tournaments !== undefined) {
-        // TODO: Format all dates to machine time
-        this.props.saveTournaments(tournaments)
+        // Format all dates to machine time
+        const tournamentsModifiedToClientTimezone = tournaments.map((tournament) => {
+          tournament['date'] = util.modifyTimestampToClientTimezoneAndFormat(tournament['date'], 'h:mmA MMM DD, YYYY')
+          tournament['registrationDeadline'] = util.modifyTimestampToClientTimezoneAndFormat(tournament['registrationDeadline'], 'h:mmA MMM DD, YYYY')
+
+          return tournament
+        })
+
+        this.props.saveTournaments(tournamentsModifiedToClientTimezone)
       }
     })
     .catch((error) => {
