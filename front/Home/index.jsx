@@ -29,7 +29,7 @@ export class Home extends Component {
       }
     })
     .then(res => {
-      return util.throwExceptionIfStatusNot200(res)
+      return util.throwExceptionIfResponseStatusNotSuccess(res)
     })
     .then((result) => {
       const { tournaments } = result

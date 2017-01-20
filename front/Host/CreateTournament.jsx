@@ -85,10 +85,10 @@ export default class CreateTournament extends Component {
     fetch('http://localhost:3000/tournament/create', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
       },
       body: JSON.stringify({
-        accessToken: localStorage.getItem('accessToken'),
         name,
         hostId: hostProfile.user_id,
         hostUsername: hostProfile.username,
@@ -100,7 +100,7 @@ export default class CreateTournament extends Component {
       })
     })
     .then((res) => {
-      return util.throwExceptionIfStatusNot200(res)
+      return util.throwExceptionIfResponseStatusNotSuccess(res)
     })
     .then((result) => {
       // TODO: Flash message of success

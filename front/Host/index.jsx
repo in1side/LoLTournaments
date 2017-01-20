@@ -67,6 +67,30 @@ export class Host extends Component {
     })
   }
 
+  requestTournamentDeletionGivenIdAndHost = (tournamentId) => {
+    fetch('http://localhost:3000/tournament/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('accessToken')
+      },
+      body: JSON.stringify({
+        tournamentId,
+        hostId: JSON.parse(localStorage.getItem('profile')).user_id
+      })
+    })
+    .then(res => {
+      return util.throwExceptionIfResponseStatusNotSuccess(res)
+    })
+    .then((result) => {
+      // TODO: Flash message about success
+      console.log('Deleted')
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
   componentDidMount () {
     if (localStorage.getItem('profile') !== null) {
       this.getHostTournaments()
@@ -89,6 +113,11 @@ export class Host extends Component {
           label={tournament.name}
           key={`my-tournament${tournament.id}`}
         >
+          <RaisedButton
+            label='DELETE'
+            secondary
+            onTouchTap={() => { this.requestTournamentDeletionGivenIdAndHost(tournament.id) }}
+          />
           <p><b>Date:&#32;</b>{tournament.date}</p>
           <p><b>Registration Deadline:&#32;</b>{tournament.registrationDeadline}</p>
           <p><b>Total Players:&#32;</b>{tournament.totalPlayers}</p>

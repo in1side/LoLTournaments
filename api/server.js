@@ -1,6 +1,5 @@
 'use strict'
 
-require('dotenv').config()
 const express = require('express')
 const app = express()
 const fs = require('fs')
@@ -9,7 +8,7 @@ const models = require('./models')
 const constants = require('../constants')
 const cors = require('cors')
 const path = require('path')
-const jwt = require('jsonwebtoken')
+const request = require('request')
 
 // Constants
 global.db = models
@@ -37,21 +36,31 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors())
 
-// Only allow HTTP requests if valid JWT sent
-// app.use((req, res, next) => {
-//   if (req.path === '/tournament/getAll') return next() // Ignore JWT validation for this
-//   const clientJWT = req.headers.authorization.substring(7) // Extract 'Bearer ' from header
-//
-//   jwt.verify(clientJWT, process.env.SECRET, (err) => {
-//     if (err !== null) {
-//       console.log('Invalid JWT... REJECTING')
-//       console.log(err)
-//       return res.status(500).send({ message: err })
-//     }
-//     console.log('Valid JWT... PASSING')
-//     next()
-//   })
-// })
+// Check for valid accessToken
+app.use((req, res, next) => {
+  // Only check for creating and deleting tournament
+  if ((req.path !== '/tournament/create') || (req.path !== '/tournament/create')) return next()
+
+  // Check if hostId is an actual valid host
+  const options = {
+    url: 'https://bsoropia.auth0.com/userinfo',
+    headers: {
+      Authorization: req.get('Authorization')
+    }
+  }
+
+  request(options, (error, response, body) => {
+    // Valid accessToken proceeds
+    if ((error === null) && (response.statusCode === 200)) {
+      if (body.user_metadata !== 'host') return res.status(401).type('application/json').send({ message: 'Only hosts can perform these actions.' })
+
+      return next()
+    } else { // Error or non success statusCode received
+      console.log('Error:', error)
+      return res.status(401).type('application/json').send({ message: 'Sorry, an error occured... Please check your input and try again.' })
+    }
+  })
+})
 
 /**
 * Require all route files in the 'routes' directory.

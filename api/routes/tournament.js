@@ -1,7 +1,6 @@
 'use strict'
 
 const db = require('../models')
-const request = require('request')
 
 module.exports = (app) => {
   // Get all tournaments' id, name, date, registrationDeadline, totalPlayers, teams, server
@@ -37,48 +36,27 @@ module.exports = (app) => {
 
   // Create a tournament with the given name, hostId, date, registrationDeadline, server
   app.post('/tournament/create', (req, res, err) => {
-    const { accessToken, name, hostId, hostUsername, date, registrationDeadline, server, totalPlayers, description } = req.body
+    const { name, hostId, hostUsername, date, registrationDeadline, server, totalPlayers, description } = req.body
 
-    // Check if hostId is an actual valid host
-    const options = {
-      url: 'https://bsoropia.auth0.com/userinfo',
-      headers: {
-        Authorization: 'Bearer ' + accessToken
-      }
-    }
-
-    request(options, (error, response, body) => {
-      // Evaluate received user profile if valid accessToken
-      if ((error === null) && (response.statusCode === 200)) {
-        if (JSON.parse(body).user_metadata.userType !== 'host') return res.status(401).send({ message: 'Only hosts can create tournaments.' })
-
-        // Create tournament if user is host
-        db.Tournament.findOrCreate({where: { name, hostId }, defaults: { date, registrationDeadline, server, teams: [], totalPlayers, description, hostUsername }})
-        .spread((tournament, isSuccessful) => {
-          if (!isSuccessful) return res.status(400).send({ message: 'Failed to create tournament.' })
-          res.status(201).send({ message: 'Successfully created tournament!' })
-        })
-        .catch((error) => {
-          console.log('Find or create error:', error)
-          res.status(500).type('application/json').send({ error: 'Something broke trying to create tournament...' })
-        })
-      } else { // Error or non 200 statusCode received
-        console.log('else', error, body)
-        res.status(400).type('application/json').send({ message: `Can't create tournament. Reason: ${body}` })
-      }
+    // Create tournament if user is host
+    db.Tournament.findOrCreate({where: { name, hostId }, defaults: { date, registrationDeadline, server, teams: [], totalPlayers, description, hostUsername }})
+    .spread((tournament, isSuccessful) => {
+      if (!isSuccessful) return res.status(400).send({ message: 'Failed to create tournament.' })
+      res.status(201).send({ message: 'Successfully created tournament!' })
     })
   })
 
   // Delete tournament and all teams participating
   app.post('/tournament/delete', (req, res, err) => {
     const { tournamentId, hostId } = req.body
+
     db.Tournament.findOne({ where: { id: tournamentId, hostId } })
     .then((tournament) => {
       if (tournament === null) return res.status(200).send({ message: 'Tournament does not exist.' })
       tournament.destroy()
       // TODO: When teams actually implemented, Delete all teams in that tournament
 
-      res.status(200).send({ message: 'Tournament was successfully deleted!' })
+      res.status(201).send({ message: 'Tournament was successfully deleted!' })
     })
     .catch((error) => {
       console.log(error)
