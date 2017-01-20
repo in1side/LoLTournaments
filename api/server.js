@@ -52,7 +52,7 @@ app.use((req, res, next) => {
   request(options, (error, response, body) => {
     // Valid accessToken proceeds
     if ((error === null) && (response.statusCode === 200)) {
-      if (body.user_metadata !== 'host') return res.status(401).type('application/json').send({ message: 'Only hosts can perform these actions.' })
+      if (JSON.parse(body).user_metadata.userType !== 'host') return res.status(401).type('application/json').send({ message: 'Only hosts can perform these actions.' })
 
       return next()
     } else { // Error or non success statusCode received
