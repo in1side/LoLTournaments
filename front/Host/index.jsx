@@ -84,7 +84,9 @@ export class Host extends Component {
     })
     .then((result) => {
       // TODO: Flash message about success
-      console.log('Deleted')
+      console.log(result.message)
+      // TODO: Refetch updated tournaments
+      this.getHostTournaments()
     })
     .catch((error) => {
       console.log(error)

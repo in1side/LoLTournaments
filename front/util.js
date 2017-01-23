@@ -7,6 +7,7 @@ module.exports = {
     return moment(timestamp).utcOffset(new Date().getTimezoneOffset()).format(format)
   },
   throwExceptionIfResponseStatusNotSuccess: (res) => {
-    return (res.status !== 200) || (res.status !== 201) ? res.json().then(({ error }) => { throw error }) : res.json()
+    console.log('res status:', res.status)
+    return (res.status !== 200) && (res.status !== 201) ? res.json().then(({ error }) => { throw error }) : res.json()
   }
 }

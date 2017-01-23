@@ -115,24 +115,19 @@ export default class CreateTournament extends Component {
 
   render () {
     return (
-      <div className='CreateTournament'>
+      <div
+        className='CreateTournament'
+        style={{ margin: '20px' }}
+      >
         <h1>Create New Tournament</h1>
-        <RaisedButton
-          label='Cancel'
-          secondary
-          onTouchTap={this.props.handleClose}
-        />
-        <RaisedButton
-          primary
-          label='Submit'
-          onTouchTap={this.submitForm}
-        />
         <div>
           <TextField
             id='nameField'
             floatingLabelText='Name'
             onChange={this.handleNameInput}
           />
+        </div>
+        <div>
           <SelectField
             floatingLabelText='Server'
             value={this.state.server}
@@ -151,6 +146,8 @@ export default class CreateTournament extends Component {
             <MenuItem value='SEA' primaryText='SEA' />
             <MenuItem value='TR' primaryText='TR' />
           </SelectField>
+        </div>
+        <div>
           <TextField
             id='totalPlayersField'
             floatingLabelText='Total Players'
@@ -183,13 +180,27 @@ export default class CreateTournament extends Component {
             onChange={this.handleRegistrationDeadlineTimeSelection}
           />
         </div>
-        <TextField
-          floatingLabelText='Description'
-          multiLine
-          onChange={this.handleDescriptionInput}
-          rows={3}
-          style={{ width: '90vw' }}
-        />
+        <div>
+          <TextField
+            floatingLabelText='Description'
+            multiLine
+            onChange={this.handleDescriptionInput}
+            rows={3}
+            style={{ width: '90vw' }}
+          />
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <RaisedButton
+            label='Cancel'
+            secondary
+            onTouchTap={this.props.handleClose}
+          />
+          <RaisedButton
+            primary
+            label='Submit'
+            onTouchTap={this.submitForm}
+          />
+        </div>
       </div>
     )
   }
