@@ -35,6 +35,7 @@ export class Host extends Component {
   }
 
   getHostTournaments = () => {
+    console.log('fetching tournaments');
     fetch('http://localhost:3000/tournament/getAllFromHost', {
       method: 'POST',
       headers: {
@@ -49,7 +50,6 @@ export class Host extends Component {
     })
     .then((results) => {
       const { tournaments } = results
-
       if (tournaments !== undefined) {
         // Format all dates to client timezone
         const tournamentsModifiedToClientTimezone = tournaments.map((tournament) => {
@@ -60,6 +60,10 @@ export class Host extends Component {
         })
 
         this.props.saveHostTournaments(tournamentsModifiedToClientTimezone)
+      } else { // Clear tournaments when host doesn't have tournaments in the DB
+        // TODO: Flash message informing host doesn't have any tournaments
+        console.log(results)
+        this.props.saveHostTournaments([])
       }
     })
     .catch((error) => {
@@ -107,26 +111,31 @@ export class Host extends Component {
   isDoneCreatingNewTournament = (prevState) => prevState.isCreatingNewTournament && !this.state.isCreatingNewTournament
 
   createTournamentTabs = () => {
-    if (this.props.tournaments === undefined) return
+    console.log('attempting tabs');
+    if (this.props.tournaments.length === 0) return
 
-    return this.props.tournaments.map((tournament) => {
+    const tournamentTabs = this.props.tournaments.map((tournament) => {
       return (
         <Tab
           label={tournament.name}
           key={`my-tournament${tournament.id}`}
         >
-          <RaisedButton
-            label='DELETE'
-            secondary
-            onTouchTap={() => { this.requestTournamentDeletionGivenIdAndHost(tournament.id) }}
-          />
-          <p><b>Date:&#32;</b>{tournament.date}</p>
-          <p><b>Registration Deadline:&#32;</b>{tournament.registrationDeadline}</p>
-          <p><b>Total Players:&#32;</b>{tournament.totalPlayers}</p>
-          <p>{tournament.description}</p>
+          <div style={{ margin: '20px' }}>
+            <RaisedButton
+              label='DELETE'
+              secondary
+              onTouchTap={() => { this.requestTournamentDeletionGivenIdAndHost(tournament.id) }}
+            />
+            <p><b>Date:&#32;</b>{tournament.date}</p>
+            <p><b>Registration Deadline:&#32;</b>{tournament.registrationDeadline}</p>
+            <p><b>Total Players:&#32;</b>{tournament.totalPlayers}</p>
+            <p>{tournament.description}</p>
+          </div>
         </Tab>
       )
     })
+
+    return (<Tabs>{tournamentTabs}</Tabs>)
   }
 
   render () {
@@ -149,10 +158,9 @@ export class Host extends Component {
             onTouchTap={() => {
               this.setState({ isCreatingNewTournament: true })
             }}
+            style={{ margin: '20px' }}
           />
-          <Tabs>
-            {this.createTournamentTabs()}
-          </Tabs>
+          {this.createTournamentTabs()}
         </div>
       )
     }
