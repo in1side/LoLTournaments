@@ -9,18 +9,12 @@ import { saveTournaments, deleteTournaments } from './ducks'
 
 // material-ui
 import {Card, CardTitle, CardText} from 'material-ui/Card'
+import RaisedButton from 'material-ui/RaisedButton'
 
 // Helpers
 import util from '../util'
 
 export class Home extends Component {
-  isUserHost = () => {
-    if (localStorage.getItem('profile') === null) return false
-
-    const userType = JSON.parse(localStorage.getItem('profile')).user_metadata.userType
-    return userType === 'host'
-  }
-
   getAllTournaments = () => {
     fetch('http://localhost:3000/tournament/getAll', {
       method: 'GET',
@@ -55,6 +49,29 @@ export class Home extends Component {
     this.getAllTournaments()
   }
 
+  showApplyButtonIfContestant = () => {
+    if (!util.isUserTypeEqualTo('contestant')) return null
+
+    return (<RaisedButton
+      label='Apply'
+      primary
+      onTouchTap={() => { console.log('hi') }}
+    />)
+  }
+
+// TODO: Send application, needs summoner name
+  applyToTournament = () => {
+    fetch('http://localhost:3000/applications/create', {
+      method: 'POST',
+      'headers': {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => {
+      return util.throwExceptionIfResponseStatusNotSuccess(res)
+    })
+  }
+
   createTournamentCards = () => {
     if (this.props.tournaments === undefined) return
 
@@ -62,10 +79,6 @@ export class Home extends Component {
       return (
         <Card
           style={{ margin: '20px' }}
-          onTouchTap={() => {
-            // TODO: Go to tournament page
-            console.log('Card clicked', tournament.id)
-          }}
           key={`tournament${tournament.id}`}
         >
           <CardTitle title={tournament.name} subtitle={`Server: ${tournament.server}`} />
@@ -74,6 +87,7 @@ export class Home extends Component {
             <p><b>Registration Deadline:&#32;</b>{tournament.registrationDeadline}</p>
             <p><b>Total Players:&#32;</b>{tournament.totalPlayers}</p>
             <p>{tournament.description}</p>
+            {this.showApplyButton()}
           </CardText>
         </Card>
       )
@@ -82,7 +96,7 @@ export class Home extends Component {
 
   render () {
     // Only render all tournaments if not a host
-    if (this.isUserHost()) {
+    if (this.props.isSignedIn && util.isUserTypeEqualTo('host')) {
       return null
     } else {
       return (
@@ -97,9 +111,10 @@ export class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { Home } = state
+  const { Home, SignInSignOut } = state
   return {
-    tournaments: Home.get('tournaments')
+    tournaments: Home.get('tournaments'),
+    isSignedIn: SignInSignOut.get('isSignedIn')
   }
 }
 

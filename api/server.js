@@ -17,6 +17,7 @@ const ROUTES_PATH = path.join(__dirname, 'routes')
 let dbSyncConfig = {
   force: false
 }
+const ROOT_DIRECTORY = 1
 
 console.log('current env: ', process.env.NODE_ENV)
 
@@ -36,10 +37,15 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors())
 
-// Check for valid accessToken
+function getUserTypeFrom (authProfile) {
+  return JSON.parse(authProfile).user_metadata.userType
+}
+
+// Check for valid accessToken when creating or deleting
 app.use((req, res, next) => {
-  // Only check for creating and deleting tournament
-  if ((req.path !== '/tournament/create') || (req.path !== '/tournament/create')) return next()
+  const pathDirectories = req.path.split('/')
+  // Allow access if not creating or deleting
+  if (!pathDirectories.includes('create') && !pathDirectories.includes('delete') && !pathDirectories.includes('toggleIsApproved')) return next()
 
   // Check if hostId is an actual valid host
   const options = {
@@ -49,12 +55,20 @@ app.use((req, res, next) => {
     }
   }
 
-  request(options, (error, response, body) => {
+  request(options, (error, response, profile) => {
     // Valid accessToken proceeds
     if ((error === null) && (response.statusCode === 200)) {
-      if (JSON.parse(body).user_metadata.userType !== 'host') return res.status(401).type('application/json').send({ message: 'Only hosts can perform these actions.' })
+      const userType = getUserTypeFrom(profile)
 
-      return next()
+      if (userType === 'contestant') { // Contestant can only create and delete applications
+        return pathDirectories[ROOT_DIRECTORY] !== 'application'
+          ? res.status(401).type('application/json').send({ message: 'Only hosts can perform this action.' })
+          : next()
+      } else if (userType === 'host') { // Host can't create applications, but can create, edit and delete tournaments and delete and toggle application status applications
+        return (pathDirectories[ROOT_DIRECTORY] === 'application') && (pathDirectories.includes('create'))
+          ? res.status(401).type('application/json').send({ message: 'Only contestants can perform this action.' })
+          : next()
+      }
     } else { // Error or non success statusCode received
       console.log('Error:', error)
       return res.status(401).type('application/json').send({ message: 'Sorry, an error occured... Please check your input and try again.' })

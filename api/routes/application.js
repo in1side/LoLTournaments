@@ -4,7 +4,7 @@ const db = require('../models')
 
 module.exports = (app) => {
   // Get all applications to a tournament
-  app.post('/applications/getAll', (req, res, err) => {
+  app.post('/application/getAll', (req, res, err) => {
     const { tournamentId } = req.body
 
     db.Application.findAll({ attributes: ['id', 'summonerName', 'isApproved'], where: { tournamentId } })
@@ -19,17 +19,18 @@ module.exports = (app) => {
   })
 
   // Creates an application to a specified, existing tournament
-  app.post('/applications/create', (req, res, err) => {
+  app.post('/application/create', (req, res, err) => {
     const { tournamentId, applicantId, summonerName } = req.body
 
     // Check if tournament even exists
     db.Tournament.findById(tournamentId)
     .then((tournament) => {
       if (tournament === null) return res.status(200).send({ message: 'The given tournament doesn\'t exist.' })
-      db.Application.findOrCreate({ where: { tournamentId, applicantId }, defaults: { summonerName, isApproved: false } })
+
+      return db.Application.findOrCreate({ where: { tournamentId, applicantId }, defaults: { summonerName, isApproved: false } })
       .spread((application, isSuccessful) => {
         if (!isSuccessful) return res.status(200).send({ message: 'You\'ve already made an application to this tournament' })
-        res.status(201).send({ message: 'Successfully created new application!' })
+        return res.status(201).send({ message: 'Successfully created new application!' })
       })
     })
     .catch((error) => {
@@ -39,7 +40,7 @@ module.exports = (app) => {
   })
 
   // Delete application if you are the applicant or tournament host based on given id
-  app.post('/applications/delete', (req, res, err) => {
+  app.post('/application/delete', (req, res, err) => {
     const { applicationId, applicantId, hostId } = req.body
 
     if (applicantId !== undefined) {
@@ -76,7 +77,7 @@ module.exports = (app) => {
   })
 
   // Toggles an application's isApproved status and updates and saves its entry in the database
-  app.post('/applications/toggleIsApproved', (req, res, err) => {
+  app.post('/application/toggleIsApproved', (req, res, err) => {
     const { applicationId } = req.body
     db.Application.findById(applicationId)
     .then((application) => {

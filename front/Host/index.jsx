@@ -26,16 +26,7 @@ export class Host extends Component {
     }
   }
 
-  isUserHost = () => {
-    const profile = localStorage.getItem('profile')
-    if (profile === null) return
-
-    const userType = JSON.parse(profile).user_metadata.userType
-    return userType === 'host'
-  }
-
   getHostTournaments = () => {
-    console.log('fetching tournaments');
     fetch('http://localhost:3000/tournament/getAllFromHost', {
       method: 'POST',
       headers: {
@@ -111,7 +102,6 @@ export class Host extends Component {
   isDoneCreatingNewTournament = (prevState) => prevState.isCreatingNewTournament && !this.state.isCreatingNewTournament
 
   createTournamentTabs = () => {
-    console.log('attempting tabs');
     if (this.props.tournaments.length === 0) return
 
     const tournamentTabs = this.props.tournaments.map((tournament) => {
@@ -149,7 +139,7 @@ export class Host extends Component {
           />
         </div>
       )
-    } else if (this.isUserHost() && (this.props.isSignedIn)) {
+    } else if (util.isUserTypeEqualTo('host') && (this.props.isSignedIn)) {
       return (
         <div className='Host'>
           <RaisedButton
@@ -163,8 +153,7 @@ export class Host extends Component {
           {this.createTournamentTabs()}
         </div>
       )
-    }
-    return null
+    } else { return null }
   }
 }
 
