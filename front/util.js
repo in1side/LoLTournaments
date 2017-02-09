@@ -16,5 +16,8 @@ module.exports = {
     if (profile === null) return false
 
     return profile.user_metadata.userType === type
+  },
+  getUserProfile: () => {
+    return JSON.parse(localStorage.getItem('profile'))
   }
 }

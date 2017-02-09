@@ -32,6 +32,8 @@ module.exports = (app) => {
   // Get all applications made by user
   app.post('/application/getAllForContestant', (req, res, err) => {
     const { userId } = req.body
+
+    console.log(userId, "auth0|586e6b86d4aed25972f99fef");
     // Get all applications for contestant
     db.Application.findAll({ attributes: ['id', 'isApproved', 'tournamentId'], where: { userId } })
     .then((applications) => {
@@ -74,7 +76,7 @@ module.exports = (app) => {
     .then((tournament) => {
       if (tournament === null) return res.status(200).send({ message: 'The given tournament doesn\'t exist.' })
 
-      return db.Application.findOrCreate({ where: { tournamentId, userId }, defaults: { summonerName, isApproved: false } })
+      return db.Application.findOrCreate({ where: { tournamentId, userId }, defaults: { summonerName, isApproved: null } })
       .spread((application, isSuccessful) => {
         if (!isSuccessful) return res.status(200).send({ message: 'You\'ve already made an application to this tournament' })
         return res.status(201).send({ message: 'Successfully created new application!' })

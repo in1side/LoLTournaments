@@ -32,6 +32,15 @@ export class SignInSignOut extends Component {
           {value: 'contestant', label: 'Contestant'},
           {value: 'host', label: 'Host'}
         ]
+      }, {
+        name: 'summonerName',
+        placeholder: 'Summoner Name',
+        validator: function (summonerName) {
+          return {
+            valid: (summonerName.length <= 16) && /^\S*$/.test(summonerName),
+            hint: 'Must have 16 or less chars containing no spaces'
+          }
+        }
       }],
       loginAfterSignUp: true,
       rememberLastLogin: true

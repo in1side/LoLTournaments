@@ -10,7 +10,7 @@ import { saveTournaments, deleteTournaments, saveApplications, delApplications }
 // material-ui
 import {Card, CardTitle, CardText} from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow } from 'material-ui/Table'
 
 // Helpers
 import util from '../util'
@@ -45,19 +45,50 @@ export class Home extends Component {
   }
 
   getAllContestantApplications = () => {
-    fetch('http://localhost:3000/applicaiton/getAll', {
-      method: 'GET',
-      'headers': { 'Content-Type': 'application/json' }
+    const userId = util.getUserProfile().user_id
+    fetch('http://localhost:3000/application/getAllForContestant', {
+      method: 'POST',
+      'headers': { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId
+      })
     })
     .then(res => {
       return util.throwExceptionIfResponseStatusNotSuccess(res)
     })
     .then((result) => {
       const { applications } = result
-
       if (applications !== undefined) {
         this.props.saveApplications(applications)
       }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
+  sendApplication = (tournamentId) => {
+    const profile = util.getUserProfile()
+    const userId = profile.user_id
+    const summonerName = profile.user_metadata.summonerName
+    fetch('http://localhost:3000/application/create', {
+      method: 'POST',
+      'headers': {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+      },
+      body: JSON.stringify({
+        userId,
+        summonerName,
+        tournamentId
+      })
+    })
+    .then(res => {
+      return util.throwExceptionIfResponseStatusNotSuccess(res)
+    })
+    .then((result) => {
+      console.log(result.message)
+      this.getAllContestantApplications()
     })
     .catch((error) => {
       console.log(error)
@@ -69,42 +100,60 @@ export class Home extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.isSignedIn && util.isUserTypeEqualTo('contestant')) {
+    // If contestant just signed in, get their applications
+    if (!this.props.isSignedIn && nextProps.isSignedIn && util.isUserTypeEqualTo('contestant')) {
       this.getAllContestantApplications()
     }
   }
 
-  showApplyButtonIfContestant = () => {
+  // Create Apply button that sends application create request with user's username, summonerName and tournamentId
+  createApplyButtonIfContestant = (tournamentId) => {
     if (!util.isUserTypeEqualTo('contestant')) return null
 
     return (<RaisedButton
       label='Apply'
       primary
-      onTouchTap={() => { console.log('hi') }}
+      onTouchTap={() => { this.sendApplication(tournamentId) }}
     />)
   }
 
+  showApplicationIsApprovedStatus = (isApproved) => {
+    if (isApproved === null) return 'Pending'
+
+    return isApproved ? 'Accepted' : 'Rejected'
+  }
+
   showContestantApplications = () => {
-    const applicationRows = this.props.applications.map((applications) => {
+    if (!this.props.isSignedIn || !util.isUserTypeEqualTo('contestant')) return null
+
+    const applicationRows = this.props.applications.map((application) => {
       return (
-        <TableRow>
-          <TableHeaderColumn>ID</TableHeaderColumn>
-          <TableHeaderColumn>Name</TableHeaderColumn>
-          <TableHeaderColumn>Status</TableHeaderColumn>
+        <TableRow
+          key={`application${application}`}
+          selectable={false}
+        >
+          <TableHeaderColumn key={`application${application.id}-tournamentName`}>{application.tournamentName}</TableHeaderColumn>
+          <TableHeaderColumn key={`application${application.id}-status`}>{this.showApplicationIsApprovedStatus(application.isApproved)}</TableHeaderColumn>
+          <TableHeaderColumn key={`application${application.id}-delete`}><button>DELETE</button></TableHeaderColumn>
         </TableRow>
       )
     })
     return (
       <Table>
-        <TableHeader>
+        <TableHeader
+          displaySelectAll={false}
+          adjustForCheckbox={false}
+        >
           <TableRow>
-            <TableHeaderColumn>Tournament Name</TableHeaderColumn>
-            <TableHeaderColumn>Status</TableHeaderColumn>
-            <TableHeaderColumn>Delete</TableHeaderColumn>
+            <TableHeaderColumn key={'application-column-tournamentName'}>Tournament Name</TableHeaderColumn>
+            <TableHeaderColumn key={'application-column-status'}>Status</TableHeaderColumn>
+            <TableHeaderColumn key={'application-column-Delete'}>Delete</TableHeaderColumn>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {/* rows */}
+        <TableBody
+          displayRowCheckbox={false}
+        >
+          {applicationRows}
         </TableBody>
       </Table>
     )
@@ -141,7 +190,7 @@ export class Home extends Component {
             <p><b>Registration Deadline:&#32;</b>{tournament.registrationDeadline}</p>
             <p><b>Total Players:&#32;</b>{tournament.totalPlayers}</p>
             <p>{tournament.description}</p>
-            {this.showApplyButtonIfContestant()}
+            {this.createApplyButtonIfContestant(tournament.id)}
           </CardText>
         </Card>
       )
@@ -156,7 +205,7 @@ export class Home extends Component {
       return (
         <div className='Home'>
           <div style={{ margin: '40px' }}>
-            {}
+            {this.showContestantApplications()}
             {this.createTournamentCards()}
           </div>
         </div>
