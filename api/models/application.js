@@ -12,7 +12,7 @@ module.exports = function (sequelize, DataTypes) {
       }
     },
     // Auth0 userID
-    applicantId: {
+    userId: {
       type: DataTypes.STRING(),
       allowNull: false
     },

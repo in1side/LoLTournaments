@@ -5,11 +5,12 @@ import { connect } from 'react-redux'
 import 'whatwg-fetch'
 
 // Action Creators
-import { saveTournaments, deleteTournaments } from './ducks'
+import { saveTournaments, deleteTournaments, saveApplications, delApplications } from './ducks'
 
 // material-ui
 import {Card, CardTitle, CardText} from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
 
 // Helpers
 import util from '../util'
@@ -18,9 +19,7 @@ export class Home extends Component {
   getAllTournaments = () => {
     fetch('http://localhost:3000/tournament/getAll', {
       method: 'GET',
-      'headers': {
-        'Content-Type': 'application/json'
-      }
+      'headers': { 'Content-Type': 'application/json' }
     })
     .then(res => {
       return util.throwExceptionIfResponseStatusNotSuccess(res)
@@ -45,8 +44,34 @@ export class Home extends Component {
     })
   }
 
+  getAllContestantApplications = () => {
+    fetch('http://localhost:3000/applicaiton/getAll', {
+      method: 'GET',
+      'headers': { 'Content-Type': 'application/json' }
+    })
+    .then(res => {
+      return util.throwExceptionIfResponseStatusNotSuccess(res)
+    })
+    .then((result) => {
+      const { applications } = result
+
+      if (applications !== undefined) {
+        this.props.saveApplications(applications)
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
   componentWillMount () {
     this.getAllTournaments()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.isSignedIn && util.isUserTypeEqualTo('contestant')) {
+      this.getAllContestantApplications()
+    }
   }
 
   showApplyButtonIfContestant = () => {
@@ -59,7 +84,33 @@ export class Home extends Component {
     />)
   }
 
-// TODO: Send application, needs summoner name
+  showContestantApplications = () => {
+    const applicationRows = this.props.applications.map((applications) => {
+      return (
+        <TableRow>
+          <TableHeaderColumn>ID</TableHeaderColumn>
+          <TableHeaderColumn>Name</TableHeaderColumn>
+          <TableHeaderColumn>Status</TableHeaderColumn>
+        </TableRow>
+      )
+    })
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHeaderColumn>Tournament Name</TableHeaderColumn>
+            <TableHeaderColumn>Status</TableHeaderColumn>
+            <TableHeaderColumn>Delete</TableHeaderColumn>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {/* rows */}
+        </TableBody>
+      </Table>
+    )
+  }
+
+  // TODO: Send application, needs summoner name
   applyToTournament = () => {
     fetch('http://localhost:3000/applications/create', {
       method: 'POST',
@@ -69,6 +120,9 @@ export class Home extends Component {
     })
     .then(res => {
       return util.throwExceptionIfResponseStatusNotSuccess(res)
+    })
+    .catch((error) => {
+      console.log(error)
     })
   }
 
@@ -87,7 +141,7 @@ export class Home extends Component {
             <p><b>Registration Deadline:&#32;</b>{tournament.registrationDeadline}</p>
             <p><b>Total Players:&#32;</b>{tournament.totalPlayers}</p>
             <p>{tournament.description}</p>
-            {this.showApplyButton()}
+            {this.showApplyButtonIfContestant()}
           </CardText>
         </Card>
       )
@@ -102,6 +156,7 @@ export class Home extends Component {
       return (
         <div className='Home'>
           <div style={{ margin: '40px' }}>
+            {}
             {this.createTournamentCards()}
           </div>
         </div>
@@ -114,6 +169,7 @@ const mapStateToProps = (state) => {
   const { Home, SignInSignOut } = state
   return {
     tournaments: Home.get('tournaments'),
+    applications: Home.get('applications'),
     isSignedIn: SignInSignOut.get('isSignedIn')
   }
 }
@@ -125,6 +181,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     deleteTournaments: () => {
       dispatch(deleteTournaments())
+    },
+    saveApplications: (applications) => {
+      dispatch(saveApplications(applications))
+    },
+    delApplications: () => {
+      dispatch(delApplications())
     }
   }
 }
