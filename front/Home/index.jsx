@@ -183,7 +183,6 @@ export class Home extends Component {
           >
             <TableRow>
               <TableHeaderColumn key={'application-column-tournamentName'}>Tournament Name</TableHeaderColumn>
-              {/* // TODO: format date */}
               <TableHeaderColumn key={'application-column-tournamentDate'}>Date</TableHeaderColumn>
               <TableHeaderColumn key={'application-column-status'}>Status</TableHeaderColumn>
               <TableHeaderColumn key={'application-column-Delete'}>Delete</TableHeaderColumn>
