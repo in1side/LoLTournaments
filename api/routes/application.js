@@ -19,12 +19,12 @@ module.exports = (app) => {
   })
 
   // Search for tournament with given id and get its name. Throw error if not found
-  function promiseToGetTournamentNameFromId (id) {
+  function promiseToGetTournamentFromId (id) {
     return db.Tournament.findById(id)
     .then((tournament) => {
       if (tournament === null) throw new Error('Tournament doesn\'t exist!')
 
-      return tournament.name
+      return tournament
     })
   }
 
@@ -33,7 +33,6 @@ module.exports = (app) => {
   app.post('/application/getAllForContestant', (req, res, err) => {
     const { userId } = req.body
 
-    console.log(userId, "auth0|586e6b86d4aed25972f99fef");
     // Get all applications for contestant
     db.Application.findAll({ attributes: ['id', 'isApproved', 'tournamentId'], where: { userId } })
     .then((applications) => {
@@ -42,14 +41,15 @@ module.exports = (app) => {
       // Append tournament names to applications
       const p1 = new Promise((resolve, reject) => {
         const getTournamentNamePendingPromises = applications.map((application) => {
-          return promiseToGetTournamentNameFromId(application.tournamentId)
+          return promiseToGetTournamentFromId(application.tournamentId)
         })
 
         // Get all tournament names in an array matching the order of given applications
         Promise.all(getTournamentNamePendingPromises)
-        .then((tournamentNames) => {
+        .then((tournaments) => {
           const applicationsWithTournamentName = applications.map((application, applicationIndex) => {
-            application.dataValues.tournamentName = tournamentNames[applicationIndex]
+            application.dataValues.tournamentName = tournaments[applicationIndex].name
+            application.dataValues.tournamentDate = tournaments[applicationIndex].date
 
             return application
           })
@@ -92,9 +92,12 @@ module.exports = (app) => {
   app.post('/application/delete', (req, res, err) => {
     const { applicationId, userId, hostId } = req.body
 
+    console.log(userId, hostId);
     if (userId !== undefined) {
       db.Application.findOne({ where: { id: applicationId, userId } })
       .then((application) => {
+        // Other that tournament host, only application creator can delete their application
+        if (application.userId !== userId) return res.status(401).send({ message: 'Only the application creator or tournament host can delete this application.' })
         if (application === null) return res.status(200).send({ message: 'Application doesn\'t exist.' })
         application.destroy()
         res.status(200).send({ message: 'Application was successfully deleted!' })

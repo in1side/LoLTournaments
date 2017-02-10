@@ -11,6 +11,7 @@ import { saveTournaments, deleteTournaments, saveApplications, delApplications }
 import {Card, CardTitle, CardText} from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow } from 'material-ui/Table'
+import Divider from 'material-ui/Divider'
 
 // Helpers
 import util from '../util'
@@ -58,16 +59,15 @@ export class Home extends Component {
     })
     .then((result) => {
       const { applications } = result
-      if (applications !== undefined) {
-        this.props.saveApplications(applications)
-      }
+      // Save received applications, or empty array if given undefined (i.e. none were found)
+      applications !== undefined ? this.props.saveApplications(applications) : this.props.saveApplications([])
     })
     .catch((error) => {
       console.log(error)
     })
   }
 
-  sendApplication = (tournamentId) => {
+  sendApplicationCreationRequest = (tournamentId) => {
     const profile = util.getUserProfile()
     const userId = profile.user_id
     const summonerName = profile.user_metadata.summonerName
@@ -81,6 +81,32 @@ export class Home extends Component {
         userId,
         summonerName,
         tournamentId
+      })
+    })
+    .then(res => {
+      return util.throwExceptionIfResponseStatusNotSuccess(res)
+    })
+    .then((result) => {
+      console.log(result.message)
+      this.getAllContestantApplications()
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
+  sendApplicationDeletionRequest = (applicationId) => {
+    const profile = util.getUserProfile()
+    const userId = profile.user_id
+    fetch('http://localhost:3000/application/delete', {
+      method: 'POST',
+      'headers': {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+      },
+      body: JSON.stringify({
+        userId,
+        applicationId
       })
     })
     .then(res => {
@@ -113,7 +139,7 @@ export class Home extends Component {
     return (<RaisedButton
       label='Apply'
       primary
-      onTouchTap={() => { this.sendApplication(tournamentId) }}
+      onTouchTap={() => { this.sendApplicationCreationRequest(tournamentId) }}
     />)
   }
 
@@ -133,29 +159,44 @@ export class Home extends Component {
           selectable={false}
         >
           <TableHeaderColumn key={`application${application.id}-tournamentName`}>{application.tournamentName}</TableHeaderColumn>
+          <TableHeaderColumn key={`application${application.id}-tournamentDate`}>{util.modifyTimestampToClientTimezoneAndFormat(application.tournamentDate, 'h:mmA MMM DD, YYYY')}</TableHeaderColumn>
           <TableHeaderColumn key={`application${application.id}-status`}>{this.showApplicationIsApprovedStatus(application.isApproved)}</TableHeaderColumn>
-          <TableHeaderColumn key={`application${application.id}-delete`}><button>DELETE</button></TableHeaderColumn>
+          <TableHeaderColumn key={`application${application.id}-delete`}>
+            <RaisedButton
+              label='Delete'
+              secondary
+              onTouchTap={() => {
+                this.sendApplicationDeletionRequest(application.id)
+              }}
+            />
+          </TableHeaderColumn>
         </TableRow>
       )
     })
     return (
-      <Table>
-        <TableHeader
-          displaySelectAll={false}
-          adjustForCheckbox={false}
-        >
-          <TableRow>
-            <TableHeaderColumn key={'application-column-tournamentName'}>Tournament Name</TableHeaderColumn>
-            <TableHeaderColumn key={'application-column-status'}>Status</TableHeaderColumn>
-            <TableHeaderColumn key={'application-column-Delete'}>Delete</TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody
-          displayRowCheckbox={false}
-        >
-          {applicationRows}
-        </TableBody>
-      </Table>
+      <div className='my-applications'>
+        <h2>My Applications</h2>
+        <Table>
+          <TableHeader
+            displaySelectAll={false}
+            adjustForCheckbox={false}
+          >
+            <TableRow>
+              <TableHeaderColumn key={'application-column-tournamentName'}>Tournament Name</TableHeaderColumn>
+              {/* // TODO: format date */}
+              <TableHeaderColumn key={'application-column-tournamentDate'}>Date</TableHeaderColumn>
+              <TableHeaderColumn key={'application-column-status'}>Status</TableHeaderColumn>
+              <TableHeaderColumn key={'application-column-Delete'}>Delete</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody
+            displayRowCheckbox={false}
+          >
+            {applicationRows}
+          </TableBody>
+        </Table>
+        <Divider />
+      </div>
     )
   }
 
