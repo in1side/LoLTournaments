@@ -91,6 +91,8 @@ function getAllRoutes (expressApp) {
 
 getAllRoutes(app)
 
+app.use(express.static(__dirname + '/')) // Serve front end???
+
 app.listen(3000, function () {
   console.log('app running on port 3000!')
 })
