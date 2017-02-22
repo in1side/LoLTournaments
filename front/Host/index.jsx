@@ -89,6 +89,32 @@ export class Host extends Component {
     })
   }
 
+  requestSetApplicationStatus = (applicationId, newStatus) => {
+    fetch('http://localhost:3000/application/setIsApproved', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('accessToken')
+      },
+      body: JSON.stringify({
+        applicationId,
+        newStatus
+      })
+    })
+    .then(res => {
+      return util.throwExceptionIfResponseStatusNotSuccess(res)
+    })
+    .then((result) => {
+      // TODO: Flash message about success
+      console.log(result.message)
+      // TODO: Refetch updated tournaments
+      this.getHostTournaments()
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
   componentDidMount () {
     if ((localStorage.getItem('profile') !== null) && (util.isUserTypeEqualTo('host'))) {
       this.getHostTournaments()
@@ -108,12 +134,12 @@ export class Host extends Component {
     return prevState.isCreatingNewTournament && !this.state.isCreatingNewTournament
   }
 
-  displayApplicationStatus = (isApproved) => {
+  displayApplicationStatusOrControls = (applicationId, isApproved) => {
     if (isApproved === null) {
       return (
         <div>
-          <RaisedButton label='ACCEPT' primary onTouchTap={() => { console.log('Accept') }} />
-          <RaisedButton label='REJECT' secondary onTouchTap={() => { console.log('Reject') }} />
+          <RaisedButton label='ACCEPT' primary onTouchTap={() => { this.requestSetApplicationStatus(applicationId, true) }} />
+          <RaisedButton label='REJECT' secondary onTouchTap={() => { this.requestSetApplicationStatus(applicationId, false) }} />
         </div>
       )
     }
@@ -134,7 +160,7 @@ export class Host extends Component {
         return (
           <TableRow key={`application${application.id}-row`}>
             <TableRowColumn key={`application${application.id}-summonerName`}>{application.summonerName}</TableRowColumn>
-            <TableRowColumn key={`application${application.id}-status`}>{this.displayApplicationStatus(application.isApproved)}</TableRowColumn>
+            <TableRowColumn key={`application${application.id}-status`}>{this.displayApplicationStatusOrControls(application.id, application.isApproved)}</TableRowColumn>
           </TableRow>
         )
       })

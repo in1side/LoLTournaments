@@ -46,7 +46,7 @@ function getUserTypeFrom (authProfile) {
 app.use((req, res, next) => {
   const pathDirectories = req.path.split('/')
   // Allow access if not creating or deleting
-  if (!pathDirectories.includes('create') && !pathDirectories.includes('delete') && !pathDirectories.includes('toggleIsApproved')) return next()
+  if (!pathDirectories.includes('create') && !pathDirectories.includes('delete') && !pathDirectories.includes('setIsApproved')) return next()
 
   // Check if hostId is an actual valid host
   const options = {
@@ -62,7 +62,7 @@ app.use((req, res, next) => {
       const userType = getUserTypeFrom(profile)
 
       if (userType === 'contestant') { // Contestant can only create and delete applications
-        return ((pathDirectories[ROOT_DIRECTORY] === 'application') && (pathDirectories[ACTION_DIRECTORY] !== 'toggleIsApproved'))
+        return ((pathDirectories[ROOT_DIRECTORY] === 'application') && (pathDirectories[ACTION_DIRECTORY] !== 'setIsApproved'))
           ? next()
           : res.status(401).type('application/json').send({ message: 'Only hosts can perform this action.' })
       } else if (userType === 'host') { // Host can't create applications, but can create, edit and delete tournaments and delete and toggle application status applications

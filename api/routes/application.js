@@ -128,13 +128,14 @@ module.exports = (app) => {
   })
 
   // Toggles an application's isApproved status and updates and saves its entry in the database
-  app.post('/application/toggleIsApproved', (req, res, err) => {
-    const { applicationId } = req.body
+  app.post('/application/setIsApproved', (req, res, err) => {
+    const { applicationId, newStatus } = req.body
+
     db.Application.findById(applicationId)
     .then((application) => {
       if (application === null) return res.status(200).send({ message: 'That application doesn\'t exist.' })
 
-      application.set('isApproved', !application.isApproved)
+      application.set('isApproved', newStatus)
       return application.save()
       .then((result) => {
         // TODO: Handle when result is a Sequelize.ValidationError
