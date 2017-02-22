@@ -8,10 +8,12 @@ const env = process.env.NODE_ENV || 'development'
 const config = require(__dirname + '/../config/config.json')[env]
 const db = {}
 
+console.log(config)
+
 if (config.use_env_constiable) {
   var sequelize = new Sequelize(process.env[config.use_env_constiable])
 } else {
-  console.log('Creating new database');
+  console.log('Creating new database')
   var sequelize = new Sequelize(config.database, config.username, config.password, config)
 }
 
