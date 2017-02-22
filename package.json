@@ -7,7 +7,7 @@
     "dev-front": "NODE_ENV=development node_modules/.bin/webpack-dev-server",
     "dev-server": "NODE_ENV=development nodemon ./api/server.js",
     "test-api": "NODE_ENV=test ava --serial ./api/tests/**/*.test.js --watch",
-    "start": "nodemon ./api/server.js"
+    "start": "node ./api/server.js"
   },
   "repository": {
     "type": "git",
