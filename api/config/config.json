@@ -1,19 +1,19 @@
 {
   "development": {
-    "username": null,
-    "password": null,
-    "database": "test-lol-tournaments",
-    "host": "127.0.0.1",
-    "port": 5432,
-    "dialect": "postgres"
+    "use_env_variable": "DB_USER",
+    "use_env_variable": "DB_PASS",
+    "use_env_variable": "DB",
+    "use_env_variable": "DB_HOST",
+    "dialect": "postgres",
+    "use_env_variable": "DB_PORT"
   },
   "test": {
-    "username": null,
-    "password": null,
-    "database": "test-lol-tournaments",
-    "host": "127.0.0.1",
-    "port": 5432,
-    "dialect": "postgres"
+    "use_env_variable": "DB_USER",
+    "use_env_variable": "DB_PASS",
+    "use_env_variable": "DB",
+    "use_env_variable": "DB_HOST",
+    "dialect": "postgres",
+    "use_env_variable": "DB_PORT"
   },
   "production": {
     "use_env_variable": "DB_USER",
