@@ -16,10 +16,11 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": null,
-    "password": null,
-    "database": "lol-tournaments",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "use_env_variable": "DB_USER",
+    "use_env_variable": "DB_PASS",
+    "use_env_variable": "DB",
+    "use_env_variable": "DB_HOST",
+    "dialect": "postgres",
+    "use_env_variable": "DB_PORT"
   }
 }
