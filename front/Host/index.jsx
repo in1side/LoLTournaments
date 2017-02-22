@@ -13,6 +13,7 @@ import { saveHostTournaments } from './ducks'
 // material-ui
 import { Tabs, Tab } from 'material-ui/Tabs'
 import RaisedButton from 'material-ui/RaisedButton'
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
 
 // Helpers
 import util from '../util'
@@ -41,6 +42,7 @@ export class Host extends Component {
     })
     .then((results) => {
       const { tournaments } = results
+
       if (tournaments !== undefined) {
         // Format all dates to client timezone
         const tournamentsModifiedToClientTimezone = tournaments.map((tournament) => {
@@ -53,7 +55,6 @@ export class Host extends Component {
         this.props.saveHostTournaments(tournamentsModifiedToClientTimezone)
       } else { // Clear tournaments when host doesn't have tournaments in the DB
         // TODO: Flash message informing host doesn't have any tournaments
-        console.log(results)
         this.props.saveHostTournaments([])
       }
     })
@@ -89,17 +90,28 @@ export class Host extends Component {
   }
 
   componentDidMount () {
-    if (localStorage.getItem('profile') !== null) {
+    if ((localStorage.getItem('profile') !== null) && (util.isUserTypeEqualTo('host'))) {
       this.getHostTournaments()
     }
   }
 
   componentDidUpdate (prevProps, prevState) {
     // Update host's teams every time they come back from creating tournaments
-    if (this.isDoneCreatingNewTournament(prevState)) this.getHostTournaments()
+    if (this.isDoneCreatingNewTournament(prevState)) {
+      this.getHostTournaments()
+    } else if (!prevProps.isSignedIn && this.props.isSignedIn) { // Get tournaments after signing in
+      this.getHostTournaments()
+    }
   }
 
-  isDoneCreatingNewTournament = (prevState) => prevState.isCreatingNewTournament && !this.state.isCreatingNewTournament
+  isDoneCreatingNewTournament = (prevState) => {
+    return prevState.isCreatingNewTournament && !this.state.isCreatingNewTournament
+  }
+
+  // TODO: Get applications for tournaments
+  createTournamentApplicationsTable = (applications) => {
+
+  }
 
   createTournamentTabs = () => {
     if (this.props.tournaments.length === 0) return
@@ -120,6 +132,8 @@ export class Host extends Component {
             <p><b>Registration Deadline:&#32;</b>{tournament.registrationDeadline}</p>
             <p><b>Total Players:&#32;</b>{tournament.totalPlayers}</p>
             <p>{tournament.description}</p>
+            {/* Applications Table */}
+
           </div>
         </Tab>
       )

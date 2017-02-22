@@ -92,7 +92,6 @@ module.exports = (app) => {
   app.post('/application/delete', (req, res, err) => {
     const { applicationId, userId, hostId } = req.body
 
-    console.log(userId, hostId);
     if (userId !== undefined) {
       db.Application.findOne({ where: { id: applicationId, userId } })
       .then((application) => {

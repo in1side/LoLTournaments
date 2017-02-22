@@ -18,15 +18,41 @@ module.exports = (app) => {
     })
   })
 
+  function getTournamentApplications (tournamentId) {
+    return db.Application.findAll({ attributes: ['id', 'summonerName', 'userId', 'isApproved'], where: { tournamentId } })
+    .then((applications) => {
+      return applications
+    })
+  }
+
   // Get all tournaments' id, name, date, registrationDeadline, totalPlayers, teams, server
   // and updatedAt timestamp ordered by updatedAt timestamp in descending order
   app.post('/tournament/getAllFromHost', (req, res, err) => {
     const { hostId } = req.body
+
     db.Tournament.findAll({ where: { hostId }, attributes: ['id', 'name', 'date', 'registrationDeadline', 'totalPlayers', 'teams', 'server', 'description'], order: [['updatedAt', 'DESC']], raw: true })
     .then((tournaments) => {
       if (tournaments.length === 0) return res.status(200).send({ message: 'You aren\'t hosting any tournaments.' })
 
-      res.status(200).send({ tournaments })
+      const p1 = new Promise((resolve, reject) => {
+        const getAllTournamentApplicationsPromises = tournaments.map((tournament) => {
+          return getTournamentApplications(tournament.id)
+        })
+
+        Promise.all(getAllTournamentApplicationsPromises)
+        .then((applications) => {
+          const tournamentsWithApplications = tournaments.map((tournament, index) => {
+            tournament.applications = applications[index]
+            return tournament
+          })
+
+          resolve(tournamentsWithApplications)
+        })
+      })
+
+      p1.then((result) => {
+        res.status(200).send({ tournaments })
+      })
     })
     .catch((error) => {
       console.log(error)
