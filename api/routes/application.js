@@ -96,8 +96,8 @@ module.exports = (app) => {
       db.Application.findOne({ where: { id: applicationId, userId } })
       .then((application) => {
         // Other that tournament host, only application creator can delete their application
-        if (application.userId !== userId) return res.status(401).send({ message: 'Only the application creator or tournament host can delete this application.' })
         if (application === null) return res.status(200).send({ message: 'Application doesn\'t exist.' })
+        if (application.userId !== userId) return res.status(401).send({ message: 'Only the application creator or tournament host can delete this application.' })
         application.destroy()
         res.status(200).send({ message: 'Application was successfully deleted!' })
       })

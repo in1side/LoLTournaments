@@ -18,6 +18,7 @@ let dbSyncConfig = {
   force: false
 }
 const ROOT_DIRECTORY = 1
+const ACTION_DIRECTORY = 2
 
 console.log('current env: ', process.env.NODE_ENV)
 
@@ -61,9 +62,9 @@ app.use((req, res, next) => {
       const userType = getUserTypeFrom(profile)
 
       if (userType === 'contestant') { // Contestant can only create and delete applications
-        return pathDirectories[ROOT_DIRECTORY] !== 'application'
-          ? res.status(401).type('application/json').send({ message: 'Only hosts can perform this action.' })
-          : next()
+        return ((pathDirectories[ROOT_DIRECTORY] === 'application') && (pathDirectories[ACTION_DIRECTORY] !== 'toggleIsApproved'))
+          ? next()
+          : res.status(401).type('application/json').send({ message: 'Only hosts can perform this action.' })
       } else if (userType === 'host') { // Host can't create applications, but can create, edit and delete tournaments and delete and toggle application status applications
         return (pathDirectories[ROOT_DIRECTORY] === 'application') && (pathDirectories.includes('create'))
           ? res.status(401).type('application/json').send({ message: 'Only contestants can perform this action.' })

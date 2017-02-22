@@ -108,9 +108,57 @@ export class Host extends Component {
     return prevState.isCreatingNewTournament && !this.state.isCreatingNewTournament
   }
 
-  // TODO: Get applications for tournaments
+  displayApplicationStatus = (isApproved) => {
+    if (isApproved === null) {
+      return (
+        <div>
+          <RaisedButton label='ACCEPT' primary onTouchTap={() => { console.log('Accept') }} />
+          <RaisedButton label='REJECT' secondary onTouchTap={() => { console.log('Reject') }} />
+        </div>
+      )
+    }
+    return isApproved ? 'Accepted' : 'Rejected'
+  }
+  // Display applications and status controls in a table
   createTournamentApplicationsTable = (applications) => {
+    let applicationRows
 
+    if (applications.length === 0) { // No applications
+      applicationRows = (
+        <TableRow>
+          <TableRowColumn>There are no applications!</TableRowColumn>
+        </TableRow>
+      )
+    } else { // Generate rows for applications
+      applicationRows = applications.map((application) => {
+        return (
+          <TableRow key={`application${application.id}-row`}>
+            <TableRowColumn key={`application${application.id}-summonerName`}>{application.summonerName}</TableRowColumn>
+            <TableRowColumn key={`application${application.id}-status`}>{this.displayApplicationStatus(application.isApproved)}</TableRowColumn>
+          </TableRow>
+        )
+      })
+    }
+
+    return (
+      <div className='Applications'>
+        <h2>Applications</h2>
+        <Table selectable={false}>
+          <TableHeader
+            displaySelectAll={false}
+            adjustForCheckbox={false}
+          >
+            <TableRow>
+              <TableHeaderColumn>Summoner Name</TableHeaderColumn>
+              <TableHeaderColumn>Status</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false}>
+            {applicationRows}
+          </TableBody>
+        </Table>
+      </div>
+    )
   }
 
   createTournamentTabs = () => {
@@ -132,8 +180,7 @@ export class Host extends Component {
             <p><b>Registration Deadline:&#32;</b>{tournament.registrationDeadline}</p>
             <p><b>Total Players:&#32;</b>{tournament.totalPlayers}</p>
             <p>{tournament.description}</p>
-            {/* Applications Table */}
-
+            {this.createTournamentApplicationsTable(tournament.applications)}
           </div>
         </Tab>
       )
